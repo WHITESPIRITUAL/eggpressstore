@@ -1,0 +1,454 @@
+Build a premium futuristic single-page ecommerce website called “Eggpress” for a Nigerian egg delivery business launching first in Benin City with future nationwide expansion capability. 
+ 
+ IMPORTANT: 
+ This website must NOT feel like a regular ecommerce website. 
+ It must feel like a premium futuristic organic commerce experience with immersive animations, elegant transitions, emotional UI interactions, and modern mobile-first design. 
+ 
+ The design direction should combine: 
+ 
+ futuristic premium UI, 
+ organic motion, 
+ soft luxury minimalism, 
+ immersive interactions, 
+ smooth animations, 
+ glassmorphism, 
+ floating elements, 
+ modern storytelling, 
+ and elegant mobile-first UX. 
+ 
+ The website must feel: 
+ 
+ premium, 
+ organized, 
+ trustworthy, 
+ fresh, 
+ creative, 
+ futuristic but human, 
+ and emotionally engaging. 
+ 
+ DO NOT use generic ecommerce templates. 
+ 
+ BRAND INFORMATION 
+ 
+ Brand Name: 
+ Eggpress 
+ 
+ Tagline: 
+ Fresh eggs, delivered fast. 
+ 
+ Business Type: 
+ Single-brand egg ecommerce and delivery platform. 
+ 
+ Launch Location: 
+ Benin City, Nigeria. 
+ 
+ Expansion: 
+ Architecture should support future nationwide scaling. 
+ 
+ Products: 
+ Chicken eggs only. 
+ 
+ WEBSITE STRUCTURE 
+ 
+ The website must be: 
+ 
+ a SINGLE PAGE WEBSITE, 
+ smooth scrolling, 
+ immersive, 
+ app-like, 
+ with modal/popup-based interactions. 
+ 
+ DO NOT create many separate pages. 
+ 
+ Instead: 
+ 
+ forms, 
+ ordering, 
+ tracking, 
+ subscriptions, 
+ and actions 
+ should open as beautiful animated modal popups. 
+ UI / DESIGN DIRECTION 
+ 
+ The UI must feel: 
+ “Futuristic Organic Commerce” 
+ 
+ NOT: 
+ 
+ cyberpunk, 
+ overly neon, 
+ or overly technical. 
+ 
+ The design must balance: 
+ 
+ futuristic aesthetics, 
+ organic farm warmth, 
+ premium minimalism, 
+ and playful creativity. 
+ 
+ Use: 
+ 
+ cinematic transitions, 
+ soft shadows, 
+ large spacing, 
+ premium typography, 
+ immersive visuals, 
+ elegant gradients, 
+ blurred glassmorphism cards, 
+ floating 3D egg elements, 
+ and smooth motion animations. 
+ 
+ Animations must feel: 
+ 
+ fluid, 
+ soft, 
+ organic, 
+ alive, 
+ cinematic, 
+ not robotic. 
+ 
+ The experience should feel similar to: 
+ 
+ premium Apple-style UX, 
+ modern food-tech startups, 
+ luxury grocery commerce, 
+ immersive interactive brand websites. 
+ CREATIVE UI FEATURES 
+ 
+ Include creative egg-inspired interactions throughout the website. 
+ 
+ Examples: 
+ 
+ floating 3D eggs, 
+ eggs moving subtly in background layers, 
+ elegant egg particles, 
+ egg transition animations, 
+ cinematic egg storytelling sections, 
+ eggs dropping into frying pans during scroll transitions, 
+ subtle organic movement effects. 
+ 
+ The menu icon MUST NOT be a regular hamburger menu. 
+ 
+ Instead: 
+ Create a creative eggshell-inspired menu icon: 
+ 
+ looks like a cracked eggshell, 
+ smoothly separates when clicked, 
+ reveals navigation elegantly. 
+ 
+ This should become a signature brand interaction. 
+ 
+ COLOR PALETTE 
+ 
+ Use premium organic futuristic colors: 
+ 
+ Primary: 
+ 
+ eggshell white, 
+ cream, 
+ soft beige. 
+ 
+ Accent: 
+ 
+ golden yellow, 
+ warm orange, 
+ fresh green. 
+ 
+ Contrast: 
+ 
+ charcoal black, 
+ matte dark tones. 
+ 
+ The color system should feel: 
+ 
+ fresh, 
+ luxurious, 
+ modern, 
+ organic, 
+ premium. 
+ TYPOGRAPHY 
+ 
+ Use elegant futuristic sans-serif typography. 
+ 
+ Headings: 
+ 
+ bold, 
+ premium, 
+ modern, 
+ cinematic. 
+ 
+ Body text: 
+ 
+ clean, 
+ soft, 
+ highly readable. 
+ 
+ Typography spacing and hierarchy must feel luxury. 
+ 
+ HOMEPAGE STRUCTURE 
+ Hero Section 
+ immersive futuristic egg visuals, 
+ premium CTA buttons, 
+ floating animated egg elements, 
+ cinematic intro section, 
+ smooth scroll transitions. 
+ Featured Egg Categories 
+ Display: 
+ Large Eggs, 
+ Medium Eggs, 
+ Small Eggs. 
+ 
+ Each category should feel premium and interactive. 
+ 
+ Freshness Promise Section 
+ Show: 
+ freshness, 
+ reliable supply, 
+ fast delivery, 
+ quality assurance. 
+ Market Price Section 
+ Display: 
+ “Prices updated based on current market rates.” 
+ Subscription Section 
+ Allow recurring egg supply setup. 
+ Delivery Tracking Section 
+ Show animated tracking progress UI. 
+ Testimonials & Reviews 
+ Include: 
+ customer reviews, 
+ testimonials, 
+ delivery success counts, 
+ verified buyer indicators, 
+ live order notification popups. 
+ Pickup & Delivery Information 
+ Footer 
+ Minimal premium footer. 
+ ORDERING SYSTEM 
+ 
+ Ordering must be EXTREMELY simple. 
+ 
+ NO: 
+ 
+ passwords, 
+ login systems, 
+ account authentication, 
+ OTP systems. 
+ 
+ Instead: 
+ Use lightweight guest ordering. 
+ 
+ When user clicks “Buy Now”: 
+ open premium animated modal popup. 
+ 
+ Customer fills: 
+ 
+ full name, 
+ phone number, 
+ delivery address, 
+ optional delivery notes. 
+ 
+ After submission: 
+ 
+ order gets stored, 
+ business owner receives order, 
+ customer gets order ID. 
+ RETURNING CUSTOMER EXPERIENCE 
+ 
+ The website should remember customer details on the same device/browser. 
+ 
+ Returning users should see: 
+ “Buy Again” 
+ 
+ Clicking it should: 
+ 
+ autofill previous details, 
+ show previous order, 
+ allow instant reorder. 
+ 
+ Also include: 
+ “Use New Delivery Details” 
+ 
+ ORDER FLOW 
+ 
+ Step 1: 
+ Select Egg Size: 
+ 
+ Large, 
+ Medium, 
+ Small. 
+ 
+ Step 2: 
+ Select Quantity Type: 
+ 
+ Full crate, 
+ Half crate, 
+ Quarter crate, 
+ Custom quantity. 
+ 
+ Step 3: 
+ Proceed to order popup form. 
+ 
+ PAYMENT SYSTEM 
+ 
+ Primary payment method: 
+ Bank Transfer only. 
+ 
+ The flow should support: 
+ 
+ virtual account style payment flow, 
+ automatic transfer confirmation, 
+ automatic order status updates after payment. 
+ 
+ NO card-heavy checkout UI. 
+ 
+ Keep trust-focused and simple. 
+ 
+ DELIVERY SYSTEM 
+ 
+ Support: 
+ 
+ Scheduled delivery dates, 
+ Pickup option. 
+ 
+ At checkout: 
+ Customer chooses: 
+ 
+ Delivery, 
+ OR 
+ Pickup. 
+ 
+ If delivery: 
+ 
+ choose preferred delivery date. 
+ 
+ If pickup: 
+ 
+ show pickup information and reference code. 
+ ORDER TRACKING SYSTEM 
+ 
+ Create a premium animated order tracking experience. 
+ 
+ Tracking stages: 
+ 
+ Order Received, 
+ Payment Confirmed, 
+ Preparing Order, 
+ Ready For Delivery, 
+ Out For Delivery, 
+ Delivered. 
+ 
+ Include: 
+ 
+ animated delivery progress bar, 
+ smooth transitions, 
+ gradient color progression. 
+ 
+ Color progression: 
+ 
+ red, 
+ orange, 
+ amber, 
+ yellow-green, 
+ lime, 
+ green. 
+ 
+ Final delivered state: 
+ full green progress bar. 
+ 
+ The tracking experience must feel satisfying and premium. 
+ 
+ ADMIN DASHBOARD 
+ 
+ Create a premium clean operational dashboard for the business owner. 
+ 
+ The owner must be able to: 
+ 
+ update egg prices, 
+ manage market pricing, 
+ manage egg sizes, 
+ view orders, 
+ accept/reject orders, 
+ update delivery progress, 
+ manage subscriptions, 
+ view customer information, 
+ send WhatsApp updates, 
+ manage banners/promotions, 
+ see revenue analytics, 
+ monitor delivery statuses. 
+ 
+ Dashboard must feel: 
+ 
+ modern, 
+ elegant, 
+ organized, 
+ lightweight, 
+ operationally smooth. 
+ TRUST & SOCIAL PROOF 
+ 
+ Include: 
+ 
+ customer testimonials, 
+ reviews, 
+ verified buyers, 
+ live order notifications, 
+ delivery success counters, 
+ freshness guarantees, 
+ trust-focused microcopy. 
+ MOBILE EXPERIENCE 
+ 
+ This website MUST be mobile-first. 
+ 
+ Optimize heavily for: 
+ 
+ mobile ordering, 
+ thumb-friendly UI, 
+ smooth touch interactions, 
+ immersive scrolling, 
+ premium mobile animations. 
+ TECH STACK DIRECTION 
+ 
+ Frontend: 
+ 
+ React, 
+ Tailwind CSS, 
+ Framer Motion, 
+ GSAP, 
+ Three.js for subtle 3D interactions. 
+ 
+ Architecture: 
+ 
+ single-page app, 
+ modal-driven interactions, 
+ scalable backend-ready structure. 
+ 
+ Backend-ready structure should support future: 
+ 
+ Laravel API integration, 
+ Supabase/Firebase integration, 
+ subscriptions, 
+ delivery systems, 
+ analytics, 
+ nationwide scaling. 
+ OVERALL EXPERIENCE GOAL 
+ 
+ The final website should feel like: 
+ “A premium futuristic egg-commerce experience.” 
+ 
+ Users should immediately feel: 
+ 
+ trust, 
+ freshness, 
+ organization, 
+ innovation, 
+ and premium quality. 
+ 
+ The website should feel memorable and emotionally engaging — not like a generic ecommerce template. 
+ 
+ Focus heavily on: 
+ 
+ premium UI polish, 
+ cinematic motion, 
+ immersive interactions, 
+ clean layouts, 
+ modern storytelling, 
+ and emotional user experience.

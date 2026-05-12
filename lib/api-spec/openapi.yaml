@@ -1,22 +1,30 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Eggpress API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: orders
+    description: Order operations
+  - name: prices
+    description: Egg price operations
+  - name: subscriptions
+    description: Subscription operations
+  - name: testimonials
+    description: Testimonials
+  - name: admin
+    description: Admin dashboard operations
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +32,177 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /prices:
+    get:
+      operationId: getPrices
+      tags: [prices]
+      summary: Get current egg prices
+      responses:
+        "200":
+          description: Current prices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EggPrice"
+    put:
+      operationId: updatePrices
+      tags: [prices]
+      summary: Update egg prices (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EggPriceInput"
+      responses:
+        "200":
+          description: Updated price
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EggPrice"
+
+  /orders:
+    get:
+      operationId: listOrders
+      tags: [orders]
+      summary: List all orders (admin)
+      responses:
+        "200":
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+    post:
+      operationId: createOrder
+      tags: [orders]
+      summary: Place a new order (guest)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderInput"
+      responses:
+        "201":
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /orders/{id}:
+    get:
+      operationId: getOrder
+      tags: [orders]
+      summary: Get order by ID (tracking)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "404":
+          description: Order not found
+
+  /orders/{id}/status:
+    patch:
+      operationId: updateOrderStatus
+      tags: [orders]
+      summary: Update order status (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderStatusUpdate"
+      responses:
+        "200":
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /subscriptions:
+    get:
+      operationId: listSubscriptions
+      tags: [subscriptions]
+      summary: List all subscriptions (admin)
+      responses:
+        "200":
+          description: List of subscriptions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Subscription"
+    post:
+      operationId: createSubscription
+      tags: [subscriptions]
+      summary: Create a recurring egg subscription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubscriptionInput"
+      responses:
+        "201":
+          description: Subscription created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Subscription"
+
+  /testimonials:
+    get:
+      operationId: listTestimonials
+      tags: [testimonials]
+      summary: Get customer testimonials
+      responses:
+        "200":
+          description: Testimonials list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Testimonial"
+
+  /admin/stats:
+    get:
+      operationId: getAdminStats
+      tags: [admin]
+      summary: Get admin dashboard statistics
+      responses:
+        "200":
+          description: Dashboard statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminStats"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +210,191 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    EggPrice:
+      type: object
+      properties:
+        id:
+          type: integer
+        size:
+          type: string
+          enum: [large, medium, small]
+        fullCrate:
+          type: number
+        halfCrate:
+          type: number
+        quarterCrate:
+          type: number
+        updatedAt:
+          type: string
+      required: [id, size, fullCrate, halfCrate, quarterCrate, updatedAt]
+
+    EggPriceInput:
+      type: object
+      properties:
+        size:
+          type: string
+          enum: [large, medium, small]
+        fullCrate:
+          type: number
+        halfCrate:
+          type: number
+        quarterCrate:
+          type: number
+      required: [size, fullCrate, halfCrate, quarterCrate]
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        customerName:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        deliveryNotes:
+          type: ["string", "null"]
+        eggSize:
+          type: string
+          enum: [large, medium, small]
+        quantityType:
+          type: string
+          enum: [full_crate, half_crate, quarter_crate, custom]
+        customQuantity:
+          type: ["integer", "null"]
+        totalAmount:
+          type: number
+        deliveryType:
+          type: string
+          enum: [delivery, pickup]
+        deliveryDate:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [received, payment_confirmed, preparing, ready, out_for_delivery, delivered]
+        referenceCode:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required: [id, customerName, phone, address, eggSize, quantityType, totalAmount, deliveryType, status, createdAt]
+
+    OrderInput:
+      type: object
+      properties:
+        customerName:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        deliveryNotes:
+          type: string
+        eggSize:
+          type: string
+          enum: [large, medium, small]
+        quantityType:
+          type: string
+          enum: [full_crate, half_crate, quarter_crate, custom]
+        customQuantity:
+          type: integer
+        totalAmount:
+          type: number
+        deliveryType:
+          type: string
+          enum: [delivery, pickup]
+        deliveryDate:
+          type: string
+      required: [customerName, phone, address, eggSize, quantityType, totalAmount, deliveryType]
+
+    OrderStatusUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [received, payment_confirmed, preparing, ready, out_for_delivery, delivered]
+      required: [status]
+
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: integer
+        customerName:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        eggSize:
+          type: string
+          enum: [large, medium, small]
+        quantityType:
+          type: string
+          enum: [full_crate, half_crate, quarter_crate, custom]
+        frequency:
+          type: string
+          enum: [weekly, biweekly, monthly]
+        active:
+          type: boolean
+        createdAt:
+          type: string
+      required: [id, customerName, phone, address, eggSize, quantityType, frequency, active, createdAt]
+
+    SubscriptionInput:
+      type: object
+      properties:
+        customerName:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        eggSize:
+          type: string
+          enum: [large, medium, small]
+        quantityType:
+          type: string
+          enum: [full_crate, half_crate, quarter_crate, custom]
+        frequency:
+          type: string
+          enum: [weekly, biweekly, monthly]
+      required: [customerName, phone, address, eggSize, quantityType, frequency]
+
+    Testimonial:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        location:
+          type: string
+        review:
+          type: string
+        rating:
+          type: integer
+        verified:
+          type: boolean
+        createdAt:
+          type: string
+      required: [id, name, location, review, rating, verified, createdAt]
+
+    AdminStats:
+      type: object
+      properties:
+        totalOrders:
+          type: integer
+        deliveredOrders:
+          type: integer
+        pendingOrders:
+          type: integer
+        totalRevenue:
+          type: number
+        activeSubscriptions:
+          type: integer
+        todayOrders:
+          type: integer
+      required: [totalOrders, deliveredOrders, pendingOrders, totalRevenue, activeSubscriptions, todayOrders]

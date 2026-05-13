@@ -7,7 +7,7 @@ import {
   useGetPrices, getGetPricesQueryKey,
   useUpdatePrices,
   useListSubscriptions, getListSubscriptionsQueryKey,
-} from "@workspace/api-client-react";
+} from "@/lib/api";
 import { useQueryClient } from "@tanstack/react-query";
 import logoImg from "../assets/eggpress-logo-nobg.png";
 

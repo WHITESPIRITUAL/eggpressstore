@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useGetOrder, getGetOrderQueryKey } from "@workspace/api-client-react";
+import { useGetOrder, getGetOrderQueryKey } from "@/lib/api";
 
 interface TrackingModalProps {
   isOpen: boolean;

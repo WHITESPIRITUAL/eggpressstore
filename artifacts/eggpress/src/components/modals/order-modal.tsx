@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useCreateOrder, useGetPrices } from "@workspace/api-client-react";
+import { useCreateOrder, useGetPrices } from "@/lib/api";
 
 interface OrderModalProps {
   isOpen: boolean;

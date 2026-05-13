@@ -1,6 +1,6 @@
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
-import { useListTestimonials } from "@workspace/api-client-react";
+import { useListTestimonials } from "@/lib/api";
 
 const liveNotifications = [
   "Chioma from GRA just ordered 2 crates of Large Eggs",

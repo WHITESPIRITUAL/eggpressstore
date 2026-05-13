@@ -1,6 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { useGetPrices } from "@workspace/api-client-react";
+import { useGetPrices } from "@/lib/api";
 
 interface EggCategoriesProps {
   onSelect: (size: "large" | "medium" | "small") => void;

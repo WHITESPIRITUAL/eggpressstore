@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useCreateSubscription } from "@workspace/api-client-react";
+import { useCreateSubscription } from "@/lib/api";
 
 interface SubscriptionModalProps {
   isOpen: boolean;

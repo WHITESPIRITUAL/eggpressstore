@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef } from "react";
-import { useGetOrder, getGetOrderQueryKey } from "@workspace/api-client-react";
+import { useGetOrder, getGetOrderQueryKey } from "@/lib/api";
 
 const stages = [
   { key: "received", label: "Order Received", color: "#EF4444" },

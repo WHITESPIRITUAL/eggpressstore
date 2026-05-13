@@ -1,6 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { useGetPrices } from "@workspace/api-client-react";
+import { useGetPrices } from "@/lib/api";
 
 const sizeEmoji = { large: "🥚", medium: "🥚", small: "🥚" };
 const sizeColors = { large: "#F5B800", medium: "#E8820C", small: "#FF5500" };

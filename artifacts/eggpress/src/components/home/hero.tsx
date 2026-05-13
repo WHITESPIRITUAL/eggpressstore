@@ -183,7 +183,7 @@ export default function Hero({ onOrder, onTrack }: HeroProps) {
               <motion.span
                 style={{
                   color: "#F5B800",
-                  WebkitTextStroke: "1px rgba(61,28,0,0.8)",
+                  WebkitTextStroke: "2px #000000",
                   paintOrder: "stroke fill",
                   display: "inline-block",
                   filter: "drop-shadow(0 4px 30px rgba(245,184,0,0.5))",

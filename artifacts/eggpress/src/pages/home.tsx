@@ -20,7 +20,6 @@ export default function Home() {
   const [isOrderModalOpen, setOrderModalOpen] = useState(false);
   const [isTrackingModalOpen, setTrackingModalOpen] = useState(false);
   const [isSubscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
-  
   const [selectedSize, setSelectedSize] = useState<"large" | "medium" | "small" | null>(null);
 
   const handleOpenOrder = (size?: "large" | "medium" | "small") => {
@@ -29,60 +28,46 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-[100dvh] bg-background text-foreground overflow-x-hidden dark">
+    <main style={{ minHeight: "100dvh", background: "var(--background)", color: "var(--foreground)", overflowX: "hidden" }}>
       <Navbar onTrackOrder={() => setTrackingModalOpen(true)} />
-      
-      <Hero 
-        onOrder={() => handleOpenOrder()} 
-        onTrack={() => setTrackingModalOpen(true)} 
-      />
-      
+
+      <Hero onOrder={() => handleOpenOrder()} onTrack={() => setTrackingModalOpen(true)} />
+
       <StatsBar />
-      
+
       <div id="products">
         <EggCategories onSelect={handleOpenOrder} />
       </div>
-      
+
       <div id="about">
         <FreshnessPromise />
       </div>
-      
+
       <MarketPrices />
-      
+
       <div id="track">
         <OrderTracking />
       </div>
-      
+
       <Subscription onSubscribe={() => setSubscriptionModalOpen(true)} />
-      
+
       <Testimonials />
-      
+
       <div id="contact">
         <PickupDelivery />
       </div>
-      
+
       <Footer />
 
-      {/* Modals */}
       <AnimatePresence>
         {isOrderModalOpen && (
-          <OrderModal 
-            isOpen={isOrderModalOpen} 
-            onClose={() => setOrderModalOpen(false)} 
-            initialSize={selectedSize}
-          />
+          <OrderModal isOpen={isOrderModalOpen} onClose={() => setOrderModalOpen(false)} initialSize={selectedSize} />
         )}
         {isTrackingModalOpen && (
-          <TrackingModal 
-            isOpen={isTrackingModalOpen} 
-            onClose={() => setTrackingModalOpen(false)} 
-          />
+          <TrackingModal isOpen={isTrackingModalOpen} onClose={() => setTrackingModalOpen(false)} />
         )}
         {isSubscriptionModalOpen && (
-          <SubscriptionModal 
-            isOpen={isSubscriptionModalOpen} 
-            onClose={() => setSubscriptionModalOpen(false)} 
-          />
+          <SubscriptionModal isOpen={isSubscriptionModalOpen} onClose={() => setSubscriptionModalOpen(false)} />
         )}
       </AnimatePresence>
     </main>

@@ -11,8 +11,7 @@ interface HeroProps {
 function EggCrate({ x, y, size = 100, delay = 0, rotate = 0 }: { x: string; y: string; size?: number; delay?: number; rotate?: number }) {
   return (
     <motion.div
-      className="absolute pointer-events-none"
-      style={{ left: x, top: y }}
+      style={{ position: "absolute", left: x, top: y, pointerEvents: "none" }}
       animate={{ y: [0, -14, 0], rotate: [rotate, rotate + 4, rotate] }}
       transition={{ duration: 6, delay, repeat: Infinity, ease: "easeInOut" }}
     >
@@ -41,8 +40,7 @@ function EggCrate({ x, y, size = 100, delay = 0, rotate = 0 }: { x: string; y: s
 function FloatingEgg({ x, y, size, delay, duration, rotate }: { x: string; y: string; size: number; delay: number; duration: number; rotate: number }) {
   return (
     <motion.div
-      className="absolute pointer-events-none"
-      style={{ left: x, top: y }}
+      style={{ position: "absolute", left: x, top: y, pointerEvents: "none" }}
       animate={{ y: [0, -24, 0], rotate: [rotate, rotate + 10, rotate] }}
       transition={{ duration, delay, repeat: Infinity, ease: "easeInOut" }}
     >
@@ -58,8 +56,7 @@ function FloatingEgg({ x, y, size, delay, duration, rotate }: { x: string; y: st
 function Sparkle({ x, y, delay }: { x: string; y: string; delay: number }) {
   return (
     <motion.div
-      className="absolute pointer-events-none"
-      style={{ left: x, top: y }}
+      style={{ position: "absolute", left: x, top: y, pointerEvents: "none" }}
       animate={{ opacity: [0, 1, 0], scale: [0.5, 1.3, 0.5] }}
       transition={{ duration: 2.8, delay, repeat: Infinity, ease: "easeInOut" }}
     >
@@ -98,23 +95,33 @@ export default function Hero({ onOrder, onTrack }: HeroProps) {
   ];
 
   return (
-    <section ref={ref} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background — rich multi-layer */}
-      <div className="absolute inset-0" style={{ background: "#0A0500" }}>
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 90% 70% at 25% 40%, rgba(245,184,0,0.18) 0%, rgba(232,130,12,0.10) 40%, transparent 75%)" }} />
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 80% at 80% 65%, rgba(180,60,0,0.12) 0%, transparent 65%)" }} />
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 40% 50% at 50% 100%, rgba(245,100,0,0.08) 0%, transparent 70%)" }} />
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "repeating-linear-gradient(45deg, #F5B800 0px, #F5B800 1px, transparent 1px, transparent 40px)" }} />
-        <div className="absolute inset-0 opacity-[0.025]" style={{ backgroundImage: "repeating-linear-gradient(0deg, #F5B800 0px, #F5B800 1px, transparent 1px, transparent 60px)" }} />
+    <section
+      ref={ref}
+      style={{
+        position: "relative",
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        overflow: "hidden",
+      }}
+    >
+      {/* Background */}
+      <div style={{ position: "absolute", inset: 0, background: "#0A0500" }}>
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 90% 70% at 25% 40%, rgba(245,184,0,0.18) 0%, rgba(232,130,12,0.10) 40%, transparent 75%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 80% at 80% 65%, rgba(180,60,0,0.12) 0%, transparent 65%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 40% 50% at 50% 100%, rgba(245,100,0,0.08) 0%, transparent 70%)" }} />
+        <div style={{ position: "absolute", inset: 0, opacity: 0.03, backgroundImage: "repeating-linear-gradient(45deg, #F5B800 0px, #F5B800 1px, transparent 1px, transparent 40px)" }} />
+        <div style={{ position: "absolute", inset: 0, opacity: 0.025, backgroundImage: "repeating-linear-gradient(0deg, #F5B800 0px, #F5B800 1px, transparent 1px, transparent 60px)" }} />
       </div>
 
       {/* Sparkles */}
-      <motion.div className="absolute inset-0" style={{ y }}>
+      <motion.div style={{ position: "absolute", inset: 0, y }}>
         {sparkles.map((s, i) => <Sparkle key={i} {...s} />)}
       </motion.div>
 
       {/* Floating eggs */}
-      <motion.div className="absolute inset-0" style={{ y }}>
+      <motion.div style={{ position: "absolute", inset: 0, y }}>
         {eggs.map((egg, i) => <FloatingEgg key={i} {...egg} />)}
       </motion.div>
 
@@ -123,70 +130,87 @@ export default function Hero({ onOrder, onTrack }: HeroProps) {
       <EggCrate x="84%" y="55%" size={75} delay={1.5} rotate={12} />
       <EggCrate x="55%" y="5%" size={60} delay={2.5} rotate={-5} />
 
-      {/* Lady image — right side */}
+      {/* Hero lady — responsive, visible on all screen sizes */}
       <motion.div
-        className="absolute bottom-0 right-0 h-full w-[48%] max-w-[640px] pointer-events-none hidden lg:block"
+        className="hero-image-wrapper"
         style={{ y: imageY }}
-        initial={{ opacity: 0, x: 60 }}
+        initial={{ opacity: 0, x: 40 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
       >
-        <div className="absolute inset-0 bottom-0 left-[10%]" style={{ background: "radial-gradient(ellipse 70% 80% at 50% 80%, rgba(245,184,0,0.22) 0%, rgba(232,100,0,0.12) 50%, transparent 80%)" }} />
+        {/* Glow behind the image */}
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "radial-gradient(ellipse 70% 80% at 50% 80%, rgba(245,184,0,0.22) 0%, rgba(232,100,0,0.12) 50%, transparent 80%)"
+        }} />
         <img
           src={heroLady}
           alt="Fresh eggs delivery"
-          className="w-full h-full object-contain object-bottom"
           style={{ filter: "drop-shadow(0 0 80px rgba(245,184,0,0.4)) drop-shadow(0 0 30px rgba(232,130,12,0.3))" }}
         />
       </motion.div>
 
       {/* Content */}
       <motion.div
-        className="relative z-10 text-left px-8 md:px-16 max-w-5xl w-full mx-auto pt-24"
-        style={{ opacity }}
+        style={{
+          position: "relative",
+          zIndex: 10,
+          textAlign: "left",
+          padding: "6rem 2rem 2rem",
+          maxWidth: "80rem",
+          width: "100%",
+          margin: "0 auto",
+          opacity,
+        }}
       >
-        <div className="max-w-2xl">
-          {/* Logo + badge row */}
+        <div style={{ maxWidth: "36rem" }}>
+          {/* Logo + badge */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex items-center gap-4 mb-6"
+            style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.5rem" }}
           >
             <motion.img
               src={logoImg}
               alt="Eggpress Logo"
-              className="w-14 h-14 object-contain"
+              style={{ width: "3.5rem", height: "3.5rem", objectFit: "contain", filter: "drop-shadow(0 0 16px rgba(245,184,0,0.6))" }}
               animate={{ rotate: [0, 5, -5, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              style={{ filter: "drop-shadow(0 0 16px rgba(245,184,0,0.6))" }}
             />
-            <div
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium tracking-wide"
-              style={{ border: "1px solid rgba(245,184,0,0.30)", background: "rgba(245,184,0,0.08)", color: "#F5B800" }}
-            >
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: "0.5rem",
+              padding: "0.5rem 1rem", borderRadius: "9999px",
+              border: "1px solid rgba(245,184,0,0.30)",
+              background: "rgba(245,184,0,0.08)", color: "#F5B800",
+              fontSize: "0.875rem", fontWeight: 500, letterSpacing: "0.05em",
+            }}>
+              <motion.span
+                style={{ width: "0.5rem", height: "0.5rem", borderRadius: "50%", background: "#F5B800", display: "inline-block" }}
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              />
               Now delivering in Benin City, Nigeria
             </div>
           </motion.div>
 
-          {/* Giant split wordmark — hairline stroke */}
+          {/* Giant wordmark */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3 }}
           >
-            <div
-              className="leading-[0.86] mb-5 tracking-wider select-none"
-              style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(5rem,15vw,12rem)" }}
-            >
+            <div style={{
+              lineHeight: 0.86, marginBottom: "1.25rem", letterSpacing: "0.1em",
+              userSelect: "none", fontFamily: "'Bebas Neue', sans-serif",
+              fontSize: "clamp(4.5rem,14vw,11rem)",
+            }}>
               <motion.span
                 style={{
                   color: "#F5B800",
                   WebkitTextStroke: "2px #000000",
                   paintOrder: "stroke fill",
                   display: "inline-block",
-                  filter: "drop-shadow(0 4px 30px rgba(245,184,0,0.5))",
                 }}
                 animate={{ filter: ["drop-shadow(0 4px 30px rgba(245,184,0,0.4))", "drop-shadow(0 4px 50px rgba(245,184,0,0.75))", "drop-shadow(0 4px 30px rgba(245,184,0,0.4))"] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
@@ -197,7 +221,6 @@ export default function Hero({ onOrder, onTrack }: HeroProps) {
                   WebkitTextStroke: "1px rgba(26,8,0,0.8)",
                   paintOrder: "stroke fill",
                   display: "inline-block",
-                  filter: "drop-shadow(0 4px 30px rgba(255,85,0,0.4))",
                 }}
                 animate={{ filter: ["drop-shadow(0 4px 30px rgba(255,85,0,0.4))", "drop-shadow(0 4px 50px rgba(255,85,0,0.65))", "drop-shadow(0 4px 30px rgba(255,85,0,0.4))"] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
@@ -210,17 +233,35 @@ export default function Hero({ onOrder, onTrack }: HeroProps) {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="font-heading font-black text-3xl md:text-5xl leading-tight mb-4"
-            style={{ color: "#ffffff", WebkitTextStroke: "3px #000000", paintOrder: "stroke fill" }}
+            style={{
+              fontFamily: "'Outfit', sans-serif",
+              fontWeight: 900,
+              fontSize: "clamp(1.5rem, 4vw, 3rem)",
+              lineHeight: 1.2,
+              marginBottom: "1rem",
+              color: "#ffffff",
+              WebkitTextStroke: "3px #000000",
+              paintOrder: "stroke fill",
+            }}
           >
-            Fresh Eggs, <span style={{ color: "#F5B800", WebkitTextStroke: "3px #000000", paintOrder: "stroke fill" }}>Delivered Fast.</span>
+            Fresh Eggs,{" "}
+            <span style={{ color: "#F5B800", WebkitTextStroke: "3px #000000", paintOrder: "stroke fill" }}>
+              Delivered Fast.
+            </span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.65 }}
-            className="text-muted-foreground text-lg max-w-lg mb-10 leading-relaxed font-sans"
+            style={{
+              color: "var(--muted-foreground)",
+              fontSize: "1.125rem",
+              maxWidth: "32rem",
+              marginBottom: "2.5rem",
+              lineHeight: 1.625,
+              fontFamily: "'Space Grotesk', sans-serif",
+            }}
           >
             Farm-fresh eggs from trusted Nigerian farms, delivered straight to your doorstep in Benin City. Quality you can taste.
           </motion.p>
@@ -230,25 +271,46 @@ export default function Hero({ onOrder, onTrack }: HeroProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="flex flex-col sm:flex-row gap-4"
+            style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}
           >
             <motion.button
               onClick={onOrder}
               whileHover={{ scale: 1.05, boxShadow: "0 0 60px rgba(245,184,0,0.6)" }}
               whileTap={{ scale: 0.97 }}
               data-testid="button-order-now"
-              className="px-10 py-4 rounded-full font-heading font-bold text-lg tracking-wide text-primary-foreground relative overflow-hidden"
-              style={{ background: "linear-gradient(135deg, #F5B800 0%, #E8820C 100%)", border: "1px solid rgba(61,28,0,0.6)", boxShadow: "0 4px 30px rgba(245,184,0,0.35), inset 0 1px 0 rgba(255,255,255,0.25)" }}
+              style={{
+                padding: "1rem 2.5rem",
+                borderRadius: "9999px",
+                fontFamily: "'Outfit', sans-serif",
+                fontWeight: 700,
+                fontSize: "1.125rem",
+                letterSpacing: "0.05em",
+                color: "#1A0A00",
+                background: "linear-gradient(135deg, #F5B800 0%, #E8820C 100%)",
+                border: "1px solid rgba(61,28,0,0.6)",
+                boxShadow: "0 4px 30px rgba(245,184,0,0.35), inset 0 1px 0 rgba(255,255,255,0.25)",
+              }}
             >
               🥚 Order Now
             </motion.button>
             <motion.button
               onClick={onTrack}
-              whileHover={{ scale: 1.05, borderColor: "rgba(245,184,0,0.7)", backgroundColor: "rgba(245,184,0,0.08)" }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
               data-testid="button-track-order"
-              className="px-10 py-4 rounded-full text-foreground font-heading font-semibold text-lg tracking-wide transition-all duration-300"
-              style={{ border: "1px solid rgba(245,184,0,0.35)", background: "rgba(255,255,255,0.04)", backdropFilter: "blur(8px)" }}
+              style={{
+                padding: "1rem 2.5rem",
+                borderRadius: "9999px",
+                fontFamily: "'Outfit', sans-serif",
+                fontWeight: 600,
+                fontSize: "1.125rem",
+                letterSpacing: "0.05em",
+                color: "var(--foreground)",
+                border: "1px solid rgba(245,184,0,0.35)",
+                background: "rgba(255,255,255,0.04)",
+                backdropFilter: "blur(8px)",
+                transition: "all 0.3s ease",
+              }}
             >
               Track Order
             </motion.button>
@@ -259,16 +321,16 @@ export default function Hero({ onOrder, onTrack }: HeroProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2, duration: 0.8 }}
-            className="flex gap-6 mt-10"
+            style={{ display: "flex", gap: "1.5rem", marginTop: "2.5rem", flexWrap: "wrap" }}
           >
             {[
               { label: "Orders Today", value: "200+" },
               { label: "Happy Customers", value: "5,000+" },
               { label: "Delivery Time", value: "< 2hrs" },
             ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div className="font-heading font-bold text-xl" style={{ color: "#F5B800" }}>{stat.value}</div>
-                <div className="text-xs text-muted-foreground tracking-wide">{stat.label}</div>
+              <div key={stat.label} style={{ textAlign: "center" }}>
+                <div style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: "1.25rem", color: "#F5B800" }}>{stat.value}</div>
+                <div style={{ fontSize: "0.75rem", color: "var(--muted-foreground)", letterSpacing: "0.05em" }}>{stat.label}</div>
               </div>
             ))}
           </motion.div>
@@ -279,15 +341,18 @@ export default function Hero({ onOrder, onTrack }: HeroProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 1 }}
-          className="absolute bottom-8 left-8 md:left-16"
+          style={{ position: "absolute", bottom: "2rem", left: "2rem" }}
         >
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="w-6 h-10 rounded-full flex justify-center pt-2"
-            style={{ border: "1px solid rgba(245,184,0,0.4)" }}
+            style={{
+              width: "1.5rem", height: "2.5rem", borderRadius: "9999px",
+              display: "flex", justifyContent: "center", paddingTop: "0.5rem",
+              border: "1px solid rgba(245,184,0,0.4)",
+            }}
           >
-            <div className="w-1.5 h-2.5 rounded-full" style={{ background: "#F5B800" }} />
+            <div style={{ width: "0.375rem", height: "0.625rem", borderRadius: "9999px", background: "#F5B800" }} />
           </motion.div>
         </motion.div>
       </motion.div>

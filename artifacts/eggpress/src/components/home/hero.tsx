@@ -210,9 +210,10 @@ export default function Hero({ onOrder, onTrack }: HeroProps) {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="font-heading font-black text-3xl md:text-5xl text-foreground leading-tight mb-4"
+            className="font-heading font-black text-3xl md:text-5xl leading-tight mb-4"
+            style={{ color: "#ffffff", WebkitTextStroke: "3px #000000", paintOrder: "stroke fill" }}
           >
-            Fresh Eggs, <span style={{ color: "#F5B800" }}>Delivered Fast.</span>
+            Fresh Eggs, <span style={{ color: "#F5B800", WebkitTextStroke: "3px #000000", paintOrder: "stroke fill" }}>Delivered Fast.</span>
           </motion.h1>
 
           <motion.p

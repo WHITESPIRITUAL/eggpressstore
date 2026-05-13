@@ -61,7 +61,8 @@ function FloatEgg({ style }: { style: React.CSSProperties }) {
 export default function EggCategories({ onSelect }: EggCategoriesProps) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const { data: prices } = useGetPrices();
+  const { data: pricesData } = useGetPrices();
+  const prices = Array.isArray(pricesData) ? pricesData : [];
 
   const sizes: Array<"large" | "medium" | "small"> = ["large", "medium", "small"];
 
@@ -101,7 +102,7 @@ export default function EggCategories({ onSelect }: EggCategoriesProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {sizes.map((size, i) => {
             const info = sizeInfo[size];
-            const price = prices?.find((p) => p.size === size);
+            const price = prices.find((p) => p.size === size);
             return (
               <motion.div
                 key={size}

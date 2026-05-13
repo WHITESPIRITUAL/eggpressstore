@@ -41,7 +41,8 @@ export default function OrderModal({ isOpen, onClose, initialSize }: OrderModalP
   const [orderId, setOrderId] = useState("");
   const [refCode, setRefCode] = useState("");
 
-  const { data: prices } = useGetPrices();
+  const { data: pricesData } = useGetPrices();
+  const prices = Array.isArray(pricesData) ? pricesData : [];
   const createOrder = useCreateOrder();
 
   useEffect(() => {
@@ -59,7 +60,7 @@ export default function OrderModal({ isOpen, onClose, initialSize }: OrderModalP
     }
   }, [isOpen, initialSize]);
 
-  const priceObj = prices?.find(p => p.size === size);
+  const priceObj = prices.find(p => p.size === size);
   const unitPrice = priceObj ? {
     full_crate: priceObj.fullCrate,
     half_crate: priceObj.halfCrate,

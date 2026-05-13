@@ -49,7 +49,7 @@ export default defineConfig({
       "@": path.resolve(import.meta.dirname, "src"),
       "@assets": path.resolve(import.meta.dirname, "..", "..", "attached_assets"),
     },
-    dedupe: ["react", "react-dom"],
+    dedupe: ["react", "react-dom", "@tanstack/react-query"],
   },
   root: path.resolve(import.meta.dirname),
   build: {
@@ -63,6 +63,12 @@ export default defineConfig({
     allowedHosts: true,
     fs: {
       strict: true,
+    },
+    proxy: {
+      "/api": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+      },
     },
   },
   preview: {

@@ -8,7 +8,8 @@ const sizeColors = { large: "#F5B800", medium: "#E8820C", small: "#FF5500" };
 export default function MarketPrices() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const { data: prices, isLoading } = useGetPrices();
+  const { data: pricesData, isLoading } = useGetPrices();
+  const prices = Array.isArray(pricesData) ? pricesData : [];
 
   const sizes: Array<"large" | "medium" | "small"> = ["large", "medium", "small"];
   const sizeLabels = { large: "Large Eggs", medium: "Medium Eggs", small: "Small Eggs" };
@@ -75,7 +76,7 @@ export default function MarketPrices() {
             </div>
           ) : (
             sizes.map((size, i) => {
-              const price = prices?.find(p => p.size === size);
+              const price = prices.find(p => p.size === size);
               const color = sizeColors[size];
               return (
                 <motion.div

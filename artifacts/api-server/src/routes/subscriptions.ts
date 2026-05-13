@@ -3,6 +3,7 @@ import { db } from "@workspace/db";
 import { subscriptionsTable } from "@workspace/db";
 import { CreateSubscriptionBody } from "@workspace/api-zod";
 import { desc } from "drizzle-orm";
+import { notifyOwner, buildNewSubscriptionMessage } from "../services/notify.js";
 
 const router = Router();
 
@@ -54,6 +55,19 @@ router.post("/subscriptions", async (req, res) => {
       .returning();
 
     res.status(201).json(serializeSub(inserted[0]));
+
+    // Notify owner of new subscription async
+    const ownerMsg = buildNewSubscriptionMessage({
+      customerName: data.customerName,
+      phone: data.phone,
+      eggSize: data.eggSize,
+      quantityType: data.quantityType,
+      frequency: data.frequency,
+      address: data.address,
+    });
+    notifyOwner(ownerMsg).then(() =>
+      req.log.info({ phone: data.phone }, "Owner notified of new subscription")
+    );
   } catch (err) {
     req.log.error({ err }, "Failed to create subscription");
     res.status(500).json({ error: "Failed to create subscription" });

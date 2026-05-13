@@ -4,6 +4,14 @@ import { ordersTable } from "@workspace/db";
 import { CreateOrderBody, GetOrderParams, UpdateOrderStatusParams, UpdateOrderStatusBody } from "@workspace/api-zod";
 import { eq, desc } from "drizzle-orm";
 import { randomBytes } from "crypto";
+import {
+  notifyOwner,
+  notifyCustomer,
+  buildOrderConfirmationMessage,
+  buildOwnerNewOrderMessage,
+  buildStatusUpdateMessage,
+  buildOwnerStatusUpdateMessage,
+} from "../services/notify.js";
 
 const router = Router();
 
@@ -75,7 +83,34 @@ router.post("/orders", async (req, res) => {
       })
       .returning();
 
-    res.status(201).json(serializeOrder(inserted[0]));
+    const order = inserted[0];
+    const serialized = serializeOrder(order);
+    res.status(201).json(serialized);
+
+    // Fire notifications async (don't block response)
+    const customerMsg = buildOrderConfirmationMessage({
+      customerName: data.customerName,
+      orderId: id,
+      eggSize: data.eggSize,
+      quantityType: data.quantityType,
+      totalAmount: data.totalAmount,
+      deliveryType: data.deliveryType,
+      referenceCode,
+    });
+    const ownerMsg = buildOwnerNewOrderMessage({
+      orderId: id,
+      customerName: data.customerName,
+      phone: data.phone,
+      eggSize: data.eggSize,
+      quantityType: data.quantityType,
+      totalAmount: data.totalAmount,
+      deliveryType: data.deliveryType,
+      address: data.address,
+    });
+    Promise.allSettled([
+      notifyCustomer(data.phone, customerMsg),
+      notifyOwner(ownerMsg),
+    ]).then(() => req.log.info({ orderId: id }, "Notifications sent for new order"));
   } catch (err) {
     req.log.error({ err }, "Failed to create order");
     res.status(500).json({ error: "Failed to create order" });
@@ -123,7 +158,25 @@ router.patch("/orders/:id/status", async (req, res) => {
       return;
     }
 
-    res.json(serializeOrder(updated[0]));
+    const order = updated[0];
+    const serialized = serializeOrder(order);
+    res.json(serialized);
+
+    // Send status update notifications async
+    const customerMsg = buildStatusUpdateMessage({
+      customerName: order.customerName,
+      orderId: order.id,
+      status: body.data.status,
+    });
+    const ownerMsg = buildOwnerStatusUpdateMessage({
+      orderId: order.id,
+      customerName: order.customerName,
+      status: body.data.status,
+    });
+    Promise.allSettled([
+      notifyCustomer(order.phone, customerMsg),
+      notifyOwner(ownerMsg),
+    ]).then(() => req.log.info({ orderId: order.id, status: body.data.status }, "Notifications sent for status update"));
   } catch (err) {
     req.log.error({ err }, "Failed to update order status");
     res.status(500).json({ error: "Failed to update order status" });

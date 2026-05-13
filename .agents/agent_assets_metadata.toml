@@ -1,0 +1,8 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "Ioe7fDPxX_GGWHF5asFrR"
+uri = "file://artifacts/eggpress/src/assets/hero-lady.png"
+type = "image"
+title = "nigerian lady holding eggs"

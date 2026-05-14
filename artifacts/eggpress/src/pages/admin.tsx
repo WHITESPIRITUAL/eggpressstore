@@ -193,7 +193,7 @@ export default function Admin() {
                 className="w-full text-left px-4 py-3 rounded-xl text-sm font-heading font-semibold transition-all duration-200 flex items-center gap-3"
                 style={{
                   background: activeTab === t.key ? "rgba(245,184,0,0.12)" : "transparent",
-                  color: activeTab === t.key ? "#F5B800" : "rgba(255,248,220,0.5)",
+                  color: activeTab === t.key ? "#F5B800" : "rgba(255,248,220,0.82)",
                   borderLeft: activeTab === t.key ? "2px solid #F5B800" : "2px solid transparent",
                 }}
               >
@@ -211,9 +211,9 @@ export default function Admin() {
             <button
               onClick={() => setAuthenticated(false)}
               className="w-full px-4 py-2 rounded-xl text-sm font-sans transition-colors flex items-center gap-2"
-              style={{ color: "rgba(255,248,220,0.4)" }}
+              style={{ color: "rgba(255,248,220,0.65)" }}
               onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = "#EF4444"; (e.currentTarget as HTMLButtonElement).style.background = "rgba(239,68,68,0.08)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,248,220,0.4)"; (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,248,220,0.65)"; (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
             >
               <span>🚪</span> Sign Out
             </button>
@@ -222,10 +222,10 @@ export default function Admin() {
 
         {/* Mobile tabs */}
         <div className="flex-1 flex flex-col min-w-0">
-          <div className="md:hidden flex gap-1 p-3 overflow-x-auto" style={{ borderBottom: "1px solid rgba(245,184,0,0.12)", background: "rgba(8,4,0,0.9)" }}>
+          <div className="md:hidden flex gap-2 p-3 overflow-x-auto no-scrollbar" style={{ borderBottom: "1px solid rgba(245,184,0,0.12)", background: "rgba(8,4,0,0.9)" }}>
             {tabConfig.map(t => (
               <button key={t.key} onClick={() => setActiveTab(t.key)} className="px-4 py-2 rounded-lg text-xs font-heading font-semibold whitespace-nowrap transition-all flex items-center gap-1.5"
-                style={{ background: activeTab === t.key ? "rgba(245,184,0,0.15)" : "transparent", color: activeTab === t.key ? "#F5B800" : "rgba(255,248,220,0.5)" }}>
+                style={{ background: activeTab === t.key ? "rgba(245,184,0,0.15)" : "rgba(255,255,255,0.06)", color: activeTab === t.key ? "#F5B800" : "rgba(255,248,220,0.85)", border: `1px solid ${activeTab === t.key ? "rgba(245,184,0,0.3)" : "rgba(255,255,255,0.1)"}` }}>
                 {t.icon} {t.label}
               </button>
             ))}

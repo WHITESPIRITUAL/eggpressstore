@@ -149,8 +149,8 @@ export default function OrderModal({ isOpen, onClose, initialSize }: OrderModalP
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.9, y: 30 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        className="w-full max-w-lg glassmorphism rounded-3xl overflow-hidden"
-        style={{ boxShadow: "0 32px 80px rgba(245,184,0,0.2)" }}
+        className="w-full max-w-lg glassmorphism rounded-3xl overflow-hidden overflow-y-auto"
+        style={{ boxShadow: "0 32px 80px rgba(245,184,0,0.2)", maxHeight: "92dvh" }}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-8 pt-8 pb-4">
@@ -276,12 +276,12 @@ export default function OrderModal({ isOpen, onClose, initialSize }: OrderModalP
                   <input value={address} onChange={e => setAddress(e.target.value)} placeholder="Delivery Address" data-testid="input-address" className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none" />
                   {deliveryType === "delivery" && (
                     <div>
-                      <label className="text-xs text-muted-foreground uppercase tracking-wide block mb-2">Closest Landmark</label>
+                      <label className="text-xs uppercase tracking-wide block mb-2" style={{ color: "var(--muted-foreground)" }}>Closest Landmark</label>
                       <select value={landmark} onChange={e => setLandmark(e.target.value)} data-testid="input-landmark"
                         className="w-full px-4 py-3 rounded-xl border text-foreground focus:outline-none transition-all"
-                        style={{ background: "rgba(255,255,255,0.04)", borderColor: landmark ? "rgba(245,184,0,0.5)" : "rgba(255,255,255,0.15)" }}>
-                        <option value="">Select nearest landmark...</option>
-                        {BENIN_LANDMARKS.map(lm => <option key={lm} value={lm}>{lm}</option>)}
+                        style={{ background: "#120800", borderColor: landmark ? "rgba(245,184,0,0.5)" : "rgba(255,255,255,0.15)", colorScheme: "dark" }}>
+                        <option value="" style={{ background: "#120800", color: "#FFF8E7" }}>Select nearest landmark...</option>
+                        {BENIN_LANDMARKS.map(lm => <option key={lm} value={lm} style={{ background: "#120800", color: "#FFF8E7" }}>{lm}</option>)}
                       </select>
                     </div>
                   )}

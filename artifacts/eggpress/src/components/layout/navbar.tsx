@@ -66,7 +66,7 @@ export default function Navbar({ onTrackOrder }: { onTrackOrder: () => void }) {
                 <span style={{ color: "#F5B800", WebkitTextStroke: "2px #3D1C00", paintOrder: "stroke fill", textShadow: "0 0 20px rgba(245,184,0,0.5)" }}>EGG</span>
                 <span style={{ color: "#FF5500", WebkitTextStroke: "2px #1A0800", paintOrder: "stroke fill", textShadow: "0 0 20px rgba(255,85,0,0.4)" }}>PRESS</span>
               </span>
-              <span className="hidden sm:block text-[9px] tracking-[0.35em] font-sans uppercase -mt-0.5" style={{ color: "rgba(245,184,0,0.55)" }}>
+              <span className="hidden sm:block text-[9px] tracking-[0.35em] font-sans uppercase -mt-0.5" style={{ color: "rgba(245,184,0,0.8)" }}>
                 Fresh · Fast · Farm
               </span>
             </div>
@@ -74,21 +74,21 @@ export default function Navbar({ onTrackOrder }: { onTrackOrder: () => void }) {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-6 font-sans font-medium text-sm">
-            <button onClick={() => scrollTo("products")} className="transition-colors tracking-wide" style={{ color: "rgba(255,248,220,0.65)" }}
+            <button onClick={() => scrollTo("products")} className="transition-colors tracking-wide" style={{ color: "rgba(255,248,220,0.88)" }}
               onMouseEnter={e => (e.currentTarget.style.color = "#F5B800")}
-              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,248,220,0.65)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,248,220,0.88)")}
             >Products</button>
-            <button onClick={() => scrollTo("about")} className="transition-colors tracking-wide" style={{ color: "rgba(255,248,220,0.65)" }}
+            <button onClick={() => scrollTo("about")} className="transition-colors tracking-wide" style={{ color: "rgba(255,248,220,0.88)" }}
               onMouseEnter={e => (e.currentTarget.style.color = "#F5B800")}
-              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,248,220,0.65)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,248,220,0.88)")}
             >About</button>
-            <Link href="/sellers" className="transition-colors tracking-wide" style={{ color: "rgba(255,248,220,0.65)" }}
+            <Link href="/sellers" className="transition-colors tracking-wide" style={{ color: "rgba(255,248,220,0.88)" }}
               onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = "#F5B800"}
-              onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,248,220,0.65)"}
+              onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,248,220,0.88)"}
             >Find Sellers</Link>
-            <button onClick={() => scrollTo("contact")} className="transition-colors tracking-wide" style={{ color: "rgba(255,248,220,0.65)" }}
+            <button onClick={() => scrollTo("contact")} className="transition-colors tracking-wide" style={{ color: "rgba(255,248,220,0.88)" }}
               onMouseEnter={e => (e.currentTarget.style.color = "#F5B800")}
-              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,248,220,0.65)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,248,220,0.88)")}
             >Contact</button>
 
             {installPrompt && !installed && (

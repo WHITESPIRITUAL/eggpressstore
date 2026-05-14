@@ -55,19 +55,20 @@ export default function MarketPrices() {
           </div>
         </motion.div>
 
+        {/* Desktop table */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.2 }}
-          className="rounded-3xl overflow-hidden"
+          className="rounded-3xl overflow-hidden hidden md:block"
           style={{ background: "rgba(15,8,0,0.7)", border: "1px solid rgba(245,184,0,0.15)", backdropFilter: "blur(20px)", boxShadow: "0 24px 64px rgba(245,184,0,0.12)" }}
         >
           {/* Header row */}
           <div className="grid grid-cols-4 px-6 py-4 border-b" style={{ borderColor: "rgba(245,184,0,0.12)", background: "rgba(245,184,0,0.08)" }}>
             <div className="font-heading font-bold text-foreground text-sm uppercase tracking-widest">Egg Size</div>
-            <div className="font-heading font-bold text-sm uppercase tracking-widest text-center" style={{ color: "#F5B800" }}>Full Crate<br /><span className="text-xs text-muted-foreground font-normal normal-case tracking-normal">(30 eggs)</span></div>
-            <div className="font-heading font-bold text-sm uppercase tracking-widest text-center" style={{ color: "#E8820C" }}>Half Crate<br /><span className="text-xs text-muted-foreground font-normal normal-case tracking-normal">(15 eggs)</span></div>
-            <div className="font-heading font-bold text-sm uppercase tracking-widest text-center" style={{ color: "#FF5500" }}>Quarter<br /><span className="text-xs text-muted-foreground font-normal normal-case tracking-normal">(8 eggs)</span></div>
+            <div className="font-heading font-bold text-sm uppercase tracking-widest text-center" style={{ color: "#F5B800" }}>Full Crate<br /><span className="text-xs font-normal normal-case tracking-normal" style={{ color: "var(--muted-foreground)" }}>(30 eggs)</span></div>
+            <div className="font-heading font-bold text-sm uppercase tracking-widest text-center" style={{ color: "#E8820C" }}>Half Crate<br /><span className="text-xs font-normal normal-case tracking-normal" style={{ color: "var(--muted-foreground)" }}>(15 eggs)</span></div>
+            <div className="font-heading font-bold text-sm uppercase tracking-widest text-center" style={{ color: "#FF5500" }}>Quarter<br /><span className="text-xs font-normal normal-case tracking-normal" style={{ color: "var(--muted-foreground)" }}>(8 eggs)</span></div>
           </div>
 
           {isLoading ? (
@@ -111,10 +112,57 @@ export default function MarketPrices() {
               );
             })
           )}
-
           <div className="px-6 py-4 border-t" style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(245,184,0,0.04)" }}>
-            <p className="text-xs text-muted-foreground font-sans">Prices may vary based on market conditions. Bulk discounts available — call or WhatsApp 09013698449</p>
+            <p className="text-xs font-sans" style={{ color: "var(--muted-foreground)" }}>Prices may vary based on market conditions. Bulk discounts available — call or WhatsApp 09013698449</p>
           </div>
+        </motion.div>
+
+        {/* Mobile cards */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.2 }}
+          className="md:hidden space-y-4"
+        >
+          {isLoading ? (
+            [1,2,3].map(i => <div key={i} className="h-32 rounded-2xl animate-pulse" style={{ background: "rgba(15,8,0,0.7)" }} />)
+          ) : (
+            sizes.map((size, i) => {
+              const price = prices.find(p => p.size === size);
+              const color = sizeColors[size];
+              return (
+                <motion.div
+                  key={size}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={inView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}
+                  className="rounded-2xl overflow-hidden"
+                  style={{ background: "rgba(15,8,0,0.7)", border: `1px solid ${color}25`, backdropFilter: "blur(20px)" }}
+                >
+                  <div className="px-5 py-3 border-b flex items-center gap-2" style={{ borderColor: `${color}20`, background: `${color}10` }}>
+                    <span className="text-lg">{sizeEmoji[size]}</span>
+                    <span className="font-heading font-bold text-foreground">{sizeLabels[size]}</span>
+                  </div>
+                  <div className="grid grid-cols-3 divide-x" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+                    {[
+                      { label: "Full Crate", sub: "30 eggs", val: price?.fullCrate, accent: color },
+                      { label: "Half Crate", sub: "15 eggs", val: price?.halfCrate, accent: undefined },
+                      { label: "Quarter", sub: "8 eggs", val: price?.quarterCrate, accent: undefined },
+                    ].map((col, j) => (
+                      <div key={j} className="px-3 py-4 text-center" style={{ borderRight: j < 2 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
+                        <div className="font-heading font-black text-base" style={{ color: col.accent ?? "var(--foreground)" }}>
+                          {col.val != null ? `₦${Number(col.val).toLocaleString()}` : "—"}
+                        </div>
+                        <div className="text-xs font-sans mt-1" style={{ color: "var(--muted-foreground)" }}>{col.label}</div>
+                        <div className="text-[10px] font-sans" style={{ color: "var(--muted-foreground)", opacity: 0.7 }}>{col.sub}</div>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              );
+            })
+          )}
+          <p className="text-xs font-sans text-center px-2" style={{ color: "var(--muted-foreground)" }}>Prices may vary. Bulk discounts available — WhatsApp 09013698449</p>
         </motion.div>
       </div>
     </section>

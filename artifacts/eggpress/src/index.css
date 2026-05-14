@@ -14,7 +14,7 @@
   --secondary:        #E8820C;
   --secondary-foreground: #FFF8E7;
   --muted:            #1E0F00;
-  --muted-foreground: #9E7840;
+  --muted-foreground: #C8964A;
   --accent:           #4CAF50;
   --accent-foreground: #FFF8E7;
   --destructive:      #EF4444;
@@ -602,6 +602,14 @@ a { text-decoration: none; color: inherit; }
   width: 80%;
   max-width: 480px;
   pointer-events: none;
+}
+
+@media (max-width: 639px) {
+  .hero-image-wrapper {
+    height: 42%;
+    width: 65%;
+    opacity: 0.45;
+  }
 }
 .hero-image-wrapper img {
   width: 100%;

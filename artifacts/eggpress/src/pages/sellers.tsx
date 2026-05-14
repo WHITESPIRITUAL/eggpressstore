@@ -69,14 +69,14 @@ export default function Sellers() {
           <button
             onClick={() => setFilterLandmark("all")}
             className="px-4 py-1.5 rounded-full text-sm font-sans font-medium transition-all"
-            style={{ background: filterLandmark === "all" ? "rgba(245,184,0,0.2)" : "rgba(255,255,255,0.05)", color: filterLandmark === "all" ? "#F5B800" : "rgba(255,248,220,0.5)", border: `1px solid ${filterLandmark === "all" ? "rgba(245,184,0,0.4)" : "rgba(255,255,255,0.1)"}` }}
+            style={{ background: filterLandmark === "all" ? "rgba(245,184,0,0.2)" : "rgba(255,255,255,0.08)", color: filterLandmark === "all" ? "#F5B800" : "rgba(255,248,220,0.85)", border: `1px solid ${filterLandmark === "all" ? "rgba(245,184,0,0.4)" : "rgba(255,255,255,0.18)"}` }}
           >All Areas</button>
           {[...new Set(sellers.map(s => s.landmark))].map(lm => (
             <button
               key={lm}
               onClick={() => setFilterLandmark(lm)}
               className="px-4 py-1.5 rounded-full text-sm font-sans font-medium transition-all"
-              style={{ background: filterLandmark === lm ? "rgba(245,184,0,0.2)" : "rgba(255,255,255,0.05)", color: filterLandmark === lm ? "#F5B800" : "rgba(255,248,220,0.5)", border: `1px solid ${filterLandmark === lm ? "rgba(245,184,0,0.4)" : "rgba(255,255,255,0.1)"}` }}
+              style={{ background: filterLandmark === lm ? "rgba(245,184,0,0.2)" : "rgba(255,255,255,0.08)", color: filterLandmark === lm ? "#F5B800" : "rgba(255,248,220,0.85)", border: `1px solid ${filterLandmark === lm ? "rgba(245,184,0,0.4)" : "rgba(255,255,255,0.18)"}` }}
             >{lm}</button>
           ))}
         </div>
@@ -192,12 +192,12 @@ export default function Sellers() {
                       <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="Phone Number" type="tel" className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none" />
                       <input value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder="Shop / Home Address" className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none" />
                       <div>
-                        <label className="text-xs text-muted-foreground uppercase tracking-wide block mb-2">Closest Landmark / Area</label>
+                        <label className="text-xs uppercase tracking-wide block mb-2" style={{ color: "var(--muted-foreground)" }}>Closest Landmark / Area</label>
                         <select value={form.landmark} onChange={e => setForm(f => ({ ...f, landmark: e.target.value }))}
-                          className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground focus:border-primary focus:outline-none"
-                          style={{ background: "rgba(255,255,255,0.04)" }}>
-                          <option value="">Select your area...</option>
-                          {BENIN_LANDMARKS.map(lm => <option key={lm} value={lm}>{lm}</option>)}
+                          className="w-full px-4 py-3 rounded-xl border text-foreground focus:border-primary focus:outline-none"
+                          style={{ background: "#120800", borderColor: "var(--border)", colorScheme: "dark" }}>
+                          <option value="" style={{ background: "#120800", color: "#FFF8E7" }}>Select your area...</option>
+                          {BENIN_LANDMARKS.map(lm => <option key={lm} value={lm} style={{ background: "#120800", color: "#FFF8E7" }}>{lm}</option>)}
                         </select>
                       </div>
                       <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Brief description (optional — e.g. I sell farm-fresh eggs daily)" rows={2} className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none resize-none" />

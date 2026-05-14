@@ -15,6 +15,11 @@ export default defineConfig({
     port: Number(process.env.PORT) || 5173,
     host: "0.0.0.0",
     allowedHosts: true,
+    hmr: {
+      clientPort: 443,
+      protocol: "wss",
+      host: process.env.REPLIT_DEV_DOMAIN,
+    },
     proxy: {
       "/api": {
         target: process.env.VITE_API_URL || "http://localhost:8080",

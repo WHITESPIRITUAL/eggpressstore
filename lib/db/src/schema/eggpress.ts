@@ -14,6 +14,7 @@ export const orderStatusEnum = pgEnum("order_status", [
   "delivered",
 ]);
 export const frequencyEnum = pgEnum("frequency", ["weekly", "biweekly", "monthly"]);
+export const sellerStatusEnum = pgEnum("seller_status", ["pending", "approved", "rejected"]);
 
 export const eggPricesTable = pgTable("egg_prices", {
   id: serial("id").primaryKey(),
@@ -29,6 +30,7 @@ export const ordersTable = pgTable("orders", {
   customerName: text("customer_name").notNull(),
   phone: text("phone").notNull(),
   address: text("address").notNull(),
+  landmark: text("landmark"),
   deliveryNotes: text("delivery_notes"),
   eggSize: eggSizeEnum("egg_size").notNull(),
   quantityType: quantityTypeEnum("quantity_type").notNull(),
@@ -63,11 +65,26 @@ export const testimonialsTable = pgTable("testimonials", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const sellersTable = pgTable("sellers", {
+  id: serial("id").primaryKey(),
+  businessName: text("business_name").notNull(),
+  ownerName: text("owner_name").notNull(),
+  phone: text("phone").notNull(),
+  address: text("address").notNull(),
+  landmark: text("landmark").notNull(),
+  description: text("description"),
+  status: sellerStatusEnum("status").notNull().default("pending"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const insertOrderSchema = createInsertSchema(ordersTable).omit({ id: true, status: true, referenceCode: true, createdAt: true });
 export const insertSubscriptionSchema = createInsertSchema(subscriptionsTable).omit({ id: true, active: true, createdAt: true });
+export const insertSellerSchema = createInsertSchema(sellersTable).omit({ id: true, status: true, createdAt: true });
 
 export type Order = typeof ordersTable.$inferSelect;
 export type InsertOrder = z.infer<typeof insertOrderSchema>;
 export type EggPrice = typeof eggPricesTable.$inferSelect;
 export type Subscription = typeof subscriptionsTable.$inferSelect;
 export type Testimonial = typeof testimonialsTable.$inferSelect;
+export type Seller = typeof sellersTable.$inferSelect;
+export type InsertSeller = z.infer<typeof insertSellerSchema>;

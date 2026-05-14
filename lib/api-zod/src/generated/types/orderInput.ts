@@ -13,6 +13,7 @@ export interface OrderInput {
   customerName: string;
   phone: string;
   address: string;
+  landmark?: string;
   deliveryNotes?: string;
   eggSize: OrderInputEggSize;
   quantityType: OrderInputQuantityType;

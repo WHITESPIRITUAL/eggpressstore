@@ -12,6 +12,44 @@ type Size = "large" | "medium" | "small";
 type QtyType = "full_crate" | "half_crate" | "quarter_crate" | "custom";
 type DeliveryType = "delivery" | "pickup";
 
+const BENIN_LANDMARKS = [
+  "Ring Road",
+  "Uselu",
+  "Ugbowo (UNIBEN Area)",
+  "Sapele Road",
+  "Airport Road",
+  "Upper Siluko",
+  "Mission Road",
+  "GRA (Government Reserved Area)",
+  "Forestry Road",
+  "First East Circular",
+  "Second East Circular",
+  "Third East Circular",
+  "Ikpoba Hill",
+  "New Benin Market",
+  "Oba Market",
+  "Akpakpava",
+  "Ekenwan Road",
+  "Aduwawa",
+  "Ogida",
+  "Isihor",
+  "Textile Mill",
+  "Oregbeni",
+  "Oliha",
+  "Sakponba Road",
+  "Wire Road",
+  "Ihama Road",
+  "Ugbor",
+  "Ekiosa Market",
+  "Ramat Park",
+  "Oba's Palace Area",
+  "Upper Mission",
+  "Dawson Road",
+  "Lagos Street",
+  "Benin City Museum Area",
+  "Avbiama",
+];
+
 const STORAGE_KEY = "eggpress_customer";
 
 function loadSaved() {
@@ -35,6 +73,7 @@ export default function OrderModal({ isOpen, onClose, initialSize }: OrderModalP
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [landmark, setLandmark] = useState("");
   const [notes, setNotes] = useState("");
   const [useSaved, setUseSaved] = useState(false);
   const [savedData, setSavedData] = useState<Record<string, string> | null>(null);
@@ -76,6 +115,7 @@ export default function OrderModal({ isOpen, onClose, initialSize }: OrderModalP
         customerName: name,
         phone,
         address,
+        landmark: deliveryType === "delivery" && landmark ? landmark : undefined,
         deliveryNotes: notes || undefined,
         eggSize: size,
         quantityType: qty,
@@ -234,6 +274,17 @@ export default function OrderModal({ isOpen, onClose, initialSize }: OrderModalP
                   <input value={name} onChange={e => setName(e.target.value)} placeholder="Full Name" data-testid="input-name" className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none" />
                   <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="Phone Number" type="tel" data-testid="input-phone" className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none" />
                   <input value={address} onChange={e => setAddress(e.target.value)} placeholder="Delivery Address" data-testid="input-address" className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none" />
+                  {deliveryType === "delivery" && (
+                    <div>
+                      <label className="text-xs text-muted-foreground uppercase tracking-wide block mb-2">Closest Landmark</label>
+                      <select value={landmark} onChange={e => setLandmark(e.target.value)} data-testid="input-landmark"
+                        className="w-full px-4 py-3 rounded-xl border text-foreground focus:outline-none transition-all"
+                        style={{ background: "rgba(255,255,255,0.04)", borderColor: landmark ? "rgba(245,184,0,0.5)" : "rgba(255,255,255,0.15)" }}>
+                        <option value="">Select nearest landmark...</option>
+                        {BENIN_LANDMARKS.map(lm => <option key={lm} value={lm}>{lm}</option>)}
+                      </select>
+                    </div>
+                  )}
                   <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Delivery notes (optional)" rows={2} data-testid="input-notes" className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none resize-none" />
                 </div>
                 <div className="flex gap-3 mt-6">

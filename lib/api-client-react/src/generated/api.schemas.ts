@@ -85,6 +85,8 @@ export interface Order {
   phone: string;
   address: string;
   /** @nullable */
+  landmark?: string | null;
+  /** @nullable */
   deliveryNotes?: string | null;
   eggSize: OrderEggSize;
   quantityType: OrderQuantityType;
@@ -131,6 +133,7 @@ export interface OrderInput {
   customerName: string;
   phone: string;
   address: string;
+  landmark?: string;
   deliveryNotes?: string;
   eggSize: OrderInputEggSize;
   quantityType: OrderInputQuantityType;
@@ -250,4 +253,48 @@ export interface AdminStats {
   totalRevenue: number;
   activeSubscriptions: number;
   todayOrders: number;
+  pendingSellers: number;
+}
+
+export type SellerStatus = (typeof SellerStatus)[keyof typeof SellerStatus];
+
+export const SellerStatus = {
+  pending: "pending",
+  approved: "approved",
+  rejected: "rejected",
+} as const;
+
+export interface Seller {
+  id: number;
+  businessName: string;
+  ownerName: string;
+  phone: string;
+  address: string;
+  landmark: string;
+  /** @nullable */
+  description?: string | null;
+  status: SellerStatus;
+  createdAt: string;
+}
+
+export interface SellerInput {
+  businessName: string;
+  ownerName: string;
+  phone: string;
+  address: string;
+  landmark: string;
+  description?: string;
+}
+
+export type SellerStatusUpdateStatus =
+  (typeof SellerStatusUpdateStatus)[keyof typeof SellerStatusUpdateStatus];
+
+export const SellerStatusUpdateStatus = {
+  pending: "pending",
+  approved: "approved",
+  rejected: "rejected",
+} as const;
+
+export interface SellerStatusUpdate {
+  status: SellerStatusUpdateStatus;
 }

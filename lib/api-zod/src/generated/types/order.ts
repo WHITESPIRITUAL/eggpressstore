@@ -16,6 +16,8 @@ export interface Order {
   phone: string;
   address: string;
   /** @nullable */
+  landmark?: string | null;
+  /** @nullable */
   deliveryNotes?: string | null;
   eggSize: OrderEggSize;
   quantityType: OrderQuantityType;

@@ -24,6 +24,9 @@ import type {
   Order,
   OrderInput,
   OrderStatusUpdate,
+  Seller,
+  SellerInput,
+  SellerStatusUpdate,
   Subscription,
   SubscriptionInput,
   Testimonial,
@@ -905,3 +908,324 @@ export function useGetAdminStats<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * @summary List approved sellers (public)
+ */
+export const getListSellersUrl = () => {
+  return `/api/sellers`;
+};
+
+export const listSellers = async (options?: RequestInit): Promise<Seller[]> => {
+  return customFetch<Seller[]>(getListSellersUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListSellersQueryKey = () => {
+  return [`/api/sellers`] as const;
+};
+
+export const getListSellersQueryOptions = <
+  TData = Awaited<ReturnType<typeof listSellers>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listSellers>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListSellersQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listSellers>>> = ({
+    signal,
+  }) => listSellers({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listSellers>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListSellersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listSellers>>
+>;
+export type ListSellersQueryError = ErrorType<unknown>;
+
+/**
+ * @summary List approved sellers (public)
+ */
+
+export function useListSellers<
+  TData = Awaited<ReturnType<typeof listSellers>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listSellers>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListSellersQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Register as an egg seller
+ */
+export const getRegisterSellerUrl = () => {
+  return `/api/sellers`;
+};
+
+export const registerSeller = async (
+  sellerInput: SellerInput,
+  options?: RequestInit,
+): Promise<Seller> => {
+  return customFetch<Seller>(getRegisterSellerUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(sellerInput),
+  });
+};
+
+export const getRegisterSellerMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof registerSeller>>,
+    TError,
+    { data: BodyType<SellerInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof registerSeller>>,
+  TError,
+  { data: BodyType<SellerInput> },
+  TContext
+> => {
+  const mutationKey = ["registerSeller"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof registerSeller>>,
+    { data: BodyType<SellerInput> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return registerSeller(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RegisterSellerMutationResult = NonNullable<
+  Awaited<ReturnType<typeof registerSeller>>
+>;
+export type RegisterSellerMutationBody = BodyType<SellerInput>;
+export type RegisterSellerMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Register as an egg seller
+ */
+export const useRegisterSeller = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof registerSeller>>,
+    TError,
+    { data: BodyType<SellerInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof registerSeller>>,
+  TError,
+  { data: BodyType<SellerInput> },
+  TContext
+> => {
+  return useMutation(getRegisterSellerMutationOptions(options));
+};
+
+/**
+ * @summary List all sellers including pending/rejected (admin)
+ */
+export const getListAllSellersUrl = () => {
+  return `/api/sellers/all`;
+};
+
+export const listAllSellers = async (
+  options?: RequestInit,
+): Promise<Seller[]> => {
+  return customFetch<Seller[]>(getListAllSellersUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListAllSellersQueryKey = () => {
+  return [`/api/sellers/all`] as const;
+};
+
+export const getListAllSellersQueryOptions = <
+  TData = Awaited<ReturnType<typeof listAllSellers>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listAllSellers>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListAllSellersQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listAllSellers>>> = ({
+    signal,
+  }) => listAllSellers({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listAllSellers>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListAllSellersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listAllSellers>>
+>;
+export type ListAllSellersQueryError = ErrorType<unknown>;
+
+/**
+ * @summary List all sellers including pending/rejected (admin)
+ */
+
+export function useListAllSellers<
+  TData = Awaited<ReturnType<typeof listAllSellers>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listAllSellers>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListAllSellersQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Approve or reject a seller (admin)
+ */
+export const getUpdateSellerStatusUrl = (id: number) => {
+  return `/api/sellers/${id}/status`;
+};
+
+export const updateSellerStatus = async (
+  id: number,
+  sellerStatusUpdate: SellerStatusUpdate,
+  options?: RequestInit,
+): Promise<Seller> => {
+  return customFetch<Seller>(getUpdateSellerStatusUrl(id), {
+    ...options,
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(sellerStatusUpdate),
+  });
+};
+
+export const getUpdateSellerStatusMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateSellerStatus>>,
+    TError,
+    { id: number; data: BodyType<SellerStatusUpdate> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateSellerStatus>>,
+  TError,
+  { id: number; data: BodyType<SellerStatusUpdate> },
+  TContext
+> => {
+  const mutationKey = ["updateSellerStatus"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateSellerStatus>>,
+    { id: number; data: BodyType<SellerStatusUpdate> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateSellerStatus(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateSellerStatusMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateSellerStatus>>
+>;
+export type UpdateSellerStatusMutationBody = BodyType<SellerStatusUpdate>;
+export type UpdateSellerStatusMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Approve or reject a seller (admin)
+ */
+export const useUpdateSellerStatus = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateSellerStatus>>,
+    TError,
+    { id: number; data: BodyType<SellerStatusUpdate> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateSellerStatus>>,
+  TError,
+  { id: number; data: BodyType<SellerStatusUpdate> },
+  TContext
+> => {
+  return useMutation(getUpdateSellerStatusMutationOptions(options));
+};

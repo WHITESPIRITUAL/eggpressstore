@@ -1,0 +1,20 @@
+{
+  "name": "Eggpress — Fresh Eggs Delivered",
+  "short_name": "Eggpress",
+  "description": "Premium farm-fresh egg delivery in Benin City, Nigeria.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080400",
+  "theme_color": "#F5B800",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["food", "shopping"],
+  "lang": "en-NG"
+}

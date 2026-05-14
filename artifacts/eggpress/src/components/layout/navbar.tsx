@@ -1,10 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import logoImg from "../../assets/eggpress-logo-nobg.png";
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+}
+
 export default function Navbar({ onTrackOrder }: { onTrackOrder: () => void }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [installed, setInstalled] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setInstallPrompt(e as BeforeInstallPromptEvent);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    window.addEventListener("appinstalled", () => setInstalled(true));
+    if (window.matchMedia("(display-mode: standalone)").matches) setInstalled(true);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  async function handleInstall() {
+    if (!installPrompt) return;
+    await installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === "accepted") { setInstalled(true); setInstallPrompt(null); }
+  }
 
   const scrollTo = (id: string) => {
     setIsOpen(false);
@@ -36,23 +61,10 @@ export default function Navbar({ onTrackOrder }: { onTrackOrder: () => void }) {
             <div className="flex flex-col leading-none">
               <span
                 className="hidden sm:block text-3xl tracking-[0.15em] transition-all duration-300"
-                style={{
-                  fontFamily: "'Bebas Neue', sans-serif",
-                  letterSpacing: "0.18em",
-                }}
+                style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.18em" }}
               >
-                <span style={{
-                  color: "#F5B800",
-                  WebkitTextStroke: "2px #3D1C00",
-                  paintOrder: "stroke fill",
-                  textShadow: "0 0 20px rgba(245,184,0,0.5)",
-                }}>EGG</span>
-                <span style={{
-                  color: "#FF5500",
-                  WebkitTextStroke: "2px #1A0800",
-                  paintOrder: "stroke fill",
-                  textShadow: "0 0 20px rgba(255,85,0,0.4)",
-                }}>PRESS</span>
+                <span style={{ color: "#F5B800", WebkitTextStroke: "2px #3D1C00", paintOrder: "stroke fill", textShadow: "0 0 20px rgba(245,184,0,0.5)" }}>EGG</span>
+                <span style={{ color: "#FF5500", WebkitTextStroke: "2px #1A0800", paintOrder: "stroke fill", textShadow: "0 0 20px rgba(255,85,0,0.4)" }}>PRESS</span>
               </span>
               <span className="hidden sm:block text-[9px] tracking-[0.35em] font-sans uppercase -mt-0.5" style={{ color: "rgba(245,184,0,0.55)" }}>
                 Fresh · Fast · Farm
@@ -61,7 +73,7 @@ export default function Navbar({ onTrackOrder }: { onTrackOrder: () => void }) {
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8 font-sans font-medium text-sm">
+          <div className="hidden md:flex items-center gap-6 font-sans font-medium text-sm">
             <button onClick={() => scrollTo("products")} className="transition-colors tracking-wide" style={{ color: "rgba(255,248,220,0.65)" }}
               onMouseEnter={e => (e.currentTarget.style.color = "#F5B800")}
               onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,248,220,0.65)")}
@@ -70,18 +82,38 @@ export default function Navbar({ onTrackOrder }: { onTrackOrder: () => void }) {
               onMouseEnter={e => (e.currentTarget.style.color = "#F5B800")}
               onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,248,220,0.65)")}
             >About</button>
+            <Link href="/sellers" className="transition-colors tracking-wide" style={{ color: "rgba(255,248,220,0.65)" }}
+              onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = "#F5B800"}
+              onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,248,220,0.65)"}
+            >Find Sellers</Link>
             <button onClick={() => scrollTo("contact")} className="transition-colors tracking-wide" style={{ color: "rgba(255,248,220,0.65)" }}
               onMouseEnter={e => (e.currentTarget.style.color = "#F5B800")}
               onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,248,220,0.65)")}
             >Contact</button>
+
+            {installPrompt && !installed && (
+              <motion.button
+                onClick={handleInstall}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all"
+                style={{ background: "rgba(76,175,80,0.15)", border: "1px solid rgba(76,175,80,0.4)", color: "#4CAF50" }}
+                title="Install Eggpress as an app"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5">
+                  <path d="M12 16l-4-4h3V4h2v8h3l-4 4z" />
+                  <path d="M20 18H4v2h16v-2z" />
+                </svg>
+                Install App
+              </motion.button>
+            )}
+
             <button
               onClick={onTrackOrder}
               className="px-5 py-2 rounded-full font-medium tracking-wide transition-all duration-200"
-              style={{
-                border: "2px solid rgba(245,184,0,0.45)",
-                color: "#F5B800",
-                background: "transparent",
-              }}
+              style={{ border: "2px solid rgba(245,184,0,0.45)", color: "#F5B800", background: "transparent" }}
               onMouseEnter={e => {
                 (e.currentTarget as HTMLButtonElement).style.background = "rgba(245,184,0,0.12)";
                 (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(245,184,0,0.7)";
@@ -101,21 +133,9 @@ export default function Navbar({ onTrackOrder }: { onTrackOrder: () => void }) {
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Menu"
           >
-            <motion.span
-              animate={{ y: isOpen ? 8 : 0, rotate: isOpen ? 45 : 0 }}
-              className="block w-7 h-0.5 rounded-full origin-center"
-              style={{ background: "#F5B800" }}
-            />
-            <motion.span
-              animate={{ opacity: isOpen ? 0 : 1, scaleX: isOpen ? 0 : 1 }}
-              className="block w-5 h-0.5 rounded-full self-start ml-1"
-              style={{ background: "#FF5500" }}
-            />
-            <motion.span
-              animate={{ y: isOpen ? -8 : 0, rotate: isOpen ? -45 : 0 }}
-              className="block w-7 h-0.5 rounded-full origin-center"
-              style={{ background: "#F5B800" }}
-            />
+            <motion.span animate={{ y: isOpen ? 8 : 0, rotate: isOpen ? 45 : 0 }} className="block w-7 h-0.5 rounded-full origin-center" style={{ background: "#F5B800" }} />
+            <motion.span animate={{ opacity: isOpen ? 0 : 1, scaleX: isOpen ? 0 : 1 }} className="block w-5 h-0.5 rounded-full self-start ml-1" style={{ background: "#FF5500" }} />
+            <motion.span animate={{ y: isOpen ? -8 : 0, rotate: isOpen ? -45 : 0 }} className="block w-7 h-0.5 rounded-full origin-center" style={{ background: "#F5B800" }} />
           </button>
         </div>
       </nav>
@@ -130,7 +150,7 @@ export default function Navbar({ onTrackOrder }: { onTrackOrder: () => void }) {
             className="fixed inset-0 z-40 flex items-center justify-center"
             style={{ background: "rgba(8,4,0,0.97)", backdropFilter: "blur(24px)" }}
           >
-            <div className="flex flex-col items-center gap-10">
+            <div className="flex flex-col items-center gap-8">
               <div className="flex items-center gap-3">
                 <img src={logoImg} alt="Eggpress" className="w-16 h-16 object-contain" style={{ filter: "drop-shadow(0 0 20px rgba(245,184,0,0.6))" }} />
                 <span className="text-6xl" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.2em" }}>
@@ -147,6 +167,10 @@ export default function Navbar({ onTrackOrder }: { onTrackOrder: () => void }) {
                   onMouseEnter={e => (e.currentTarget.style.color = "#F5B800")}
                   onMouseLeave={e => (e.currentTarget.style.color = "#FFF8DC")}
                 >About</button>
+                <Link href="/sellers" onClick={() => setIsOpen(false)} style={{ color: "#FFF8DC" }}
+                  onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = "#F5B800"}
+                  onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = "#FFF8DC"}
+                >Find Sellers</Link>
                 <button onClick={() => scrollTo("contact")} style={{ color: "#FFF8DC" }}
                   onMouseEnter={e => (e.currentTarget.style.color = "#F5B800")}
                   onMouseLeave={e => (e.currentTarget.style.color = "#FFF8DC")}
@@ -154,6 +178,14 @@ export default function Navbar({ onTrackOrder }: { onTrackOrder: () => void }) {
                 <button onClick={() => { setIsOpen(false); onTrackOrder(); }} style={{ color: "#F5B800" }}>
                   Track Order
                 </button>
+                {installPrompt && !installed && (
+                  <button onClick={() => { setIsOpen(false); handleInstall(); }}
+                    className="flex items-center gap-2 px-6 py-3 rounded-2xl text-lg font-bold"
+                    style={{ background: "rgba(76,175,80,0.15)", border: "1px solid rgba(76,175,80,0.4)", color: "#4CAF50" }}
+                  >
+                    📲 Install App
+                  </button>
+                )}
               </div>
             </div>
           </motion.div>

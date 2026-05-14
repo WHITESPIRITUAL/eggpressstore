@@ -19,6 +19,8 @@ tags:
     description: Testimonials
   - name: admin
     description: Admin dashboard operations
+  - name: sellers
+    description: Egg seller directory operations
 paths:
   /healthz:
     get:
@@ -203,6 +205,78 @@ paths:
               schema:
                 $ref: "#/components/schemas/AdminStats"
 
+  /sellers:
+    get:
+      operationId: listSellers
+      tags: [sellers]
+      summary: List approved sellers (public)
+      responses:
+        "200":
+          description: List of approved sellers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Seller"
+    post:
+      operationId: registerSeller
+      tags: [sellers]
+      summary: Register as an egg seller
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SellerInput"
+      responses:
+        "201":
+          description: Seller registration submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Seller"
+
+  /sellers/all:
+    get:
+      operationId: listAllSellers
+      tags: [sellers]
+      summary: List all sellers including pending/rejected (admin)
+      responses:
+        "200":
+          description: All sellers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Seller"
+
+  /sellers/{id}/status:
+    patch:
+      operationId: updateSellerStatus
+      tags: [sellers]
+      summary: Approve or reject a seller (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SellerStatusUpdate"
+      responses:
+        "200":
+          description: Updated seller
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Seller"
+
 components:
   schemas:
     HealthStatus:
@@ -255,6 +329,8 @@ components:
           type: string
         address:
           type: string
+        landmark:
+          type: ["string", "null"]
         deliveryNotes:
           type: ["string", "null"]
         eggSize:
@@ -289,6 +365,8 @@ components:
         phone:
           type: string
         address:
+          type: string
+        landmark:
           type: string
         deliveryNotes:
           type: string
@@ -397,4 +475,55 @@ components:
           type: integer
         todayOrders:
           type: integer
-      required: [totalOrders, deliveredOrders, pendingOrders, totalRevenue, activeSubscriptions, todayOrders]
+        pendingSellers:
+          type: integer
+      required: [totalOrders, deliveredOrders, pendingOrders, totalRevenue, activeSubscriptions, todayOrders, pendingSellers]
+
+    Seller:
+      type: object
+      properties:
+        id:
+          type: integer
+        businessName:
+          type: string
+        ownerName:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        landmark:
+          type: string
+        description:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+        createdAt:
+          type: string
+      required: [id, businessName, ownerName, phone, address, landmark, status, createdAt]
+
+    SellerInput:
+      type: object
+      properties:
+        businessName:
+          type: string
+        ownerName:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        landmark:
+          type: string
+        description:
+          type: string
+      required: [businessName, ownerName, phone, address, landmark]
+
+    SellerStatusUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+      required: [status]

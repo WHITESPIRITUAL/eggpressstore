@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { ordersTable, subscriptionsTable } from "@workspace/db";
+import { ordersTable, subscriptionsTable, sellersTable } from "@workspace/db";
 import { eq, sql, and } from "drizzle-orm";
 
 const router = Router();
@@ -28,6 +28,10 @@ router.get("/admin/stats", async (req, res) => {
       .select({ count: sql<number>`count(*)::int` })
       .from(ordersTable)
       .where(sql`created_at::date = current_date`);
+    const [pendingSellersResult] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(sellersTable)
+      .where(eq(sellersTable.status, "pending"));
 
     res.json({
       totalOrders: totalResult.count,
@@ -36,6 +40,7 @@ router.get("/admin/stats", async (req, res) => {
       totalRevenue: revenueResult.total,
       activeSubscriptions: activeSubsResult.count,
       todayOrders: todayResult.count,
+      pendingSellers: pendingSellersResult.count,
     });
   } catch (err) {
     req.log.error({ err }, "Failed to fetch admin stats");

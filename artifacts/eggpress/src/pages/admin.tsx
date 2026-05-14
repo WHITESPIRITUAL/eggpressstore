@@ -7,13 +7,15 @@ import {
   useGetPrices, getGetPricesQueryKey,
   useUpdatePrices,
   useListSubscriptions, getListSubscriptionsQueryKey,
+  useListAllSellers, getListAllSellersQueryKey,
+  useUpdateSellerStatus,
 } from "@/lib/api";
 import { useQueryClient } from "@tanstack/react-query";
 import logoImg from "../assets/eggpress-logo-nobg.png";
 
 const ADMIN_PIN = "1234";
 
-type Tab = "dashboard" | "orders" | "prices" | "subscriptions";
+type Tab = "dashboard" | "orders" | "prices" | "subscriptions" | "sellers";
 
 const statusOptions = ["received", "payment_confirmed", "preparing", "ready", "out_for_delivery", "delivered"] as const;
 
@@ -31,6 +33,7 @@ const tabConfig: { key: Tab; label: string; icon: string }[] = [
   { key: "orders", label: "Orders", icon: "📦" },
   { key: "prices", label: "Prices", icon: "💰" },
   { key: "subscriptions", label: "Subscriptions", icon: "🔄" },
+  { key: "sellers", label: "Sellers", icon: "🧑‍🌾" },
 ];
 
 export default function Admin() {
@@ -50,13 +53,21 @@ export default function Admin() {
   const { data: orders } = useListOrders({ query: { enabled: authenticated && activeTab === "orders", queryKey: getListOrdersQueryKey() } });
   const { data: prices } = useGetPrices({ query: { enabled: authenticated && activeTab === "prices", queryKey: getGetPricesQueryKey() } });
   const { data: subscriptions } = useListSubscriptions({ query: { enabled: authenticated && activeTab === "subscriptions", queryKey: getListSubscriptionsQueryKey() } });
+  const { data: sellers } = useListAllSellers({ query: { enabled: authenticated && activeTab === "sellers", queryKey: getListAllSellersQueryKey() } });
 
   const updateStatus = useUpdateOrderStatus();
   const updatePrice = useUpdatePrices();
+  const updateSellerStatus = useUpdateSellerStatus();
 
   function handleStatusChange(orderId: string, status: string) {
     updateStatus.mutate({ id: orderId, data: { status: status as typeof statusOptions[number] } }, {
       onSuccess: () => qc.invalidateQueries({ queryKey: getListOrdersQueryKey() }),
+    });
+  }
+
+  function handleSellerStatus(sellerId: number, status: "pending" | "approved" | "rejected") {
+    updateSellerStatus.mutate({ id: sellerId, data: { status } }, {
+      onSuccess: () => qc.invalidateQueries({ queryKey: getListAllSellersQueryKey() }),
     });
   }
 
@@ -238,6 +249,7 @@ export default function Admin() {
                       { label: "Revenue", value: stats?.totalRevenue ? `₦${Number(stats.totalRevenue).toLocaleString()}` : "—", color: "#F5B800", bg: "rgba(245,184,0,0.10)", icon: "💰" },
                       { label: "Active Subs", value: stats?.activeSubscriptions ?? "—", color: "#4CAF50", bg: "rgba(76,175,80,0.10)", icon: "🔄" },
                       { label: "Today's Orders", value: stats?.todayOrders ?? "—", color: "#E8820C", bg: "rgba(232,130,12,0.10)", icon: "📅" },
+                      { label: "Pending Sellers", value: stats?.pendingSellers ?? "—", color: "#84CC16", bg: "rgba(132,204,22,0.10)", icon: "🧑‍🌾" },
                     ].map((card, i) => (
                       <motion.div
                         key={card.label}
@@ -319,6 +331,7 @@ export default function Admin() {
                               </div>
                               <p className="font-heading font-semibold text-foreground">{order.customerName}</p>
                               <p className="text-sm text-muted-foreground">{order.phone} · {order.eggSize} eggs · {order.quantityType.replace(/_/g, " ")} · {order.deliveryType}</p>
+                              {order.landmark && <p className="text-xs" style={{ color: "#F5B800" }}>📍 Nearest: {order.landmark}</p>}
                               <p className="font-bold text-lg" style={{ color: "#F5B800" }}>₦{Number(order.totalAmount).toLocaleString()}</p>
                             </div>
                             <select
@@ -477,6 +490,83 @@ export default function Admin() {
                         </div>
                       </motion.div>
                     ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Sellers */}
+              {activeTab === "sellers" && (
+                <motion.div key="sellers" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                  <div className="flex items-center gap-3 mb-8">
+                    <span className="text-3xl">🧑‍🌾</span>
+                    <h1 className="font-heading font-black text-3xl text-foreground">Sellers</h1>
+                    <span className="ml-2 px-3 py-1 rounded-full text-xs font-semibold" style={{ background: "rgba(132,204,22,0.12)", color: "#84CC16" }}>
+                      {(sellers ?? []).filter(s => s.status === "pending").length} pending
+                    </span>
+                  </div>
+                  <div className="space-y-3">
+                    {(sellers ?? []).length === 0 && (
+                      <div className="text-center py-16 rounded-2xl" style={{ background: "rgba(12,6,0,0.6)", border: "1px solid rgba(245,184,0,0.1)" }}>
+                        <div className="text-5xl mb-4">🧑‍🌾</div>
+                        <p className="text-muted-foreground font-heading">No seller registrations yet</p>
+                      </div>
+                    )}
+                    {(sellers ?? []).map((seller, i) => {
+                      const statusColor = seller.status === "approved" ? "#22C55E" : seller.status === "rejected" ? "#EF4444" : "#F5B800";
+                      const statusBg = seller.status === "approved" ? "rgba(34,197,94,0.12)" : seller.status === "rejected" ? "rgba(239,68,68,0.12)" : "rgba(245,184,0,0.12)";
+                      const statusIcon = seller.status === "approved" ? "✅" : seller.status === "rejected" ? "❌" : "⏳";
+                      return (
+                        <motion.div
+                          key={seller.id}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: i * 0.04 }}
+                          className="rounded-2xl p-5 relative overflow-hidden"
+                          style={{ background: "rgba(12,6,0,0.75)", border: `1px solid ${statusColor}20`, backdropFilter: "blur(16px)" }}
+                        >
+                          <div className="absolute left-0 top-0 bottom-0 w-0.5 rounded-l-2xl" style={{ background: statusColor }} />
+                          <div className="flex items-start justify-between flex-wrap gap-4 pl-3">
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="font-heading font-bold text-foreground">{seller.businessName}</span>
+                                <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: statusBg, color: statusColor }}>
+                                  {statusIcon} {seller.status.charAt(0).toUpperCase() + seller.status.slice(1)}
+                                </span>
+                              </div>
+                              <p className="text-sm text-muted-foreground">{seller.ownerName} · {seller.phone}</p>
+                              <p className="text-sm text-muted-foreground">📍 {seller.landmark} — {seller.address}</p>
+                              {seller.description && <p className="text-xs text-muted-foreground italic">"{seller.description}"</p>}
+                              <p className="text-xs text-muted-foreground">{new Date(seller.createdAt).toLocaleDateString()}</p>
+                            </div>
+                            {seller.status === "pending" && (
+                              <div className="flex gap-2 flex-shrink-0">
+                                <button
+                                  onClick={() => handleSellerStatus(seller.id, "approved")}
+                                  className="px-4 py-2 rounded-xl text-sm font-heading font-bold transition-all"
+                                  style={{ background: "rgba(34,197,94,0.15)", border: "1px solid rgba(34,197,94,0.4)", color: "#22C55E" }}
+                                  onMouseEnter={e => (e.currentTarget.style.background = "rgba(34,197,94,0.25)")}
+                                  onMouseLeave={e => (e.currentTarget.style.background = "rgba(34,197,94,0.15)")}
+                                >✓ Approve</button>
+                                <button
+                                  onClick={() => handleSellerStatus(seller.id, "rejected")}
+                                  className="px-4 py-2 rounded-xl text-sm font-heading font-bold transition-all"
+                                  style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.35)", color: "#EF4444" }}
+                                  onMouseEnter={e => (e.currentTarget.style.background = "rgba(239,68,68,0.22)")}
+                                  onMouseLeave={e => (e.currentTarget.style.background = "rgba(239,68,68,0.12)")}
+                                >✗ Reject</button>
+                              </div>
+                            )}
+                            {seller.status !== "pending" && (
+                              <button
+                                onClick={() => handleSellerStatus(seller.id, "pending")}
+                                className="px-4 py-2 rounded-xl text-xs font-sans transition-all"
+                                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,248,220,0.4)" }}
+                              >Reset to Pending</button>
+                            )}
+                          </div>
+                        </motion.div>
+                      );
+                    })}
                   </div>
                 </motion.div>
               )}

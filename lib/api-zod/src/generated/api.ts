@@ -54,6 +54,7 @@ export const ListOrdersResponseItem = zod.object({
   customerName: zod.string(),
   phone: zod.string(),
   address: zod.string(),
+  landmark: zod.string().nullish(),
   deliveryNotes: zod.string().nullish(),
   eggSize: zod.enum(["large", "medium", "small"]),
   quantityType: zod.enum([
@@ -86,6 +87,7 @@ export const CreateOrderBody = zod.object({
   customerName: zod.string(),
   phone: zod.string(),
   address: zod.string(),
+  landmark: zod.string().optional(),
   deliveryNotes: zod.string().optional(),
   eggSize: zod.enum(["large", "medium", "small"]),
   quantityType: zod.enum([
@@ -112,6 +114,7 @@ export const GetOrderResponse = zod.object({
   customerName: zod.string(),
   phone: zod.string(),
   address: zod.string(),
+  landmark: zod.string().nullish(),
   deliveryNotes: zod.string().nullish(),
   eggSize: zod.enum(["large", "medium", "small"]),
   quantityType: zod.enum([
@@ -159,6 +162,7 @@ export const UpdateOrderStatusResponse = zod.object({
   customerName: zod.string(),
   phone: zod.string(),
   address: zod.string(),
+  landmark: zod.string().nullish(),
   deliveryNotes: zod.string().nullish(),
   eggSize: zod.enum(["large", "medium", "small"]),
   quantityType: zod.enum([
@@ -247,4 +251,72 @@ export const GetAdminStatsResponse = zod.object({
   totalRevenue: zod.number(),
   activeSubscriptions: zod.number(),
   todayOrders: zod.number(),
+  pendingSellers: zod.number(),
+});
+
+/**
+ * @summary List approved sellers (public)
+ */
+export const ListSellersResponseItem = zod.object({
+  id: zod.number(),
+  businessName: zod.string(),
+  ownerName: zod.string(),
+  phone: zod.string(),
+  address: zod.string(),
+  landmark: zod.string(),
+  description: zod.string().nullish(),
+  status: zod.enum(["pending", "approved", "rejected"]),
+  createdAt: zod.string(),
+});
+export const ListSellersResponse = zod.array(ListSellersResponseItem);
+
+/**
+ * @summary Register as an egg seller
+ */
+export const RegisterSellerBody = zod.object({
+  businessName: zod.string(),
+  ownerName: zod.string(),
+  phone: zod.string(),
+  address: zod.string(),
+  landmark: zod.string(),
+  description: zod.string().optional(),
+});
+
+/**
+ * @summary List all sellers including pending/rejected (admin)
+ */
+export const ListAllSellersResponseItem = zod.object({
+  id: zod.number(),
+  businessName: zod.string(),
+  ownerName: zod.string(),
+  phone: zod.string(),
+  address: zod.string(),
+  landmark: zod.string(),
+  description: zod.string().nullish(),
+  status: zod.enum(["pending", "approved", "rejected"]),
+  createdAt: zod.string(),
+});
+export const ListAllSellersResponse = zod.array(ListAllSellersResponseItem);
+
+/**
+ * @summary Approve or reject a seller (admin)
+ */
+export const UpdateSellerStatusParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateSellerStatusBody = zod.object({
+  status: zod.enum(["pending", "approved", "rejected"]),
+});
+
+export const UpdateSellerStatusResponse = zod.object({
+  id: zod.number(),
+  businessName: zod.string(),
+  ownerName: zod.string(),
+  phone: zod.string(),
+  address: zod.string(),
+  landmark: zod.string(),
+  description: zod.string().nullish(),
+  status: zod.enum(["pending", "approved", "rejected"]),
+  createdAt: zod.string(),
 });

@@ -45,6 +45,7 @@ export interface Order {
   customerName: string;
   phone: string;
   address: string;
+  landmark?: string | null;
   deliveryNotes?: string | null;
   eggSize: EggPriceSize;
   quantityType: OrderQuantityType;
@@ -61,6 +62,7 @@ export interface OrderInput {
   customerName: string;
   phone: string;
   address: string;
+  landmark?: string;
   deliveryNotes?: string;
   eggSize: EggPriceSize;
   quantityType: OrderQuantityType;
@@ -112,6 +114,34 @@ export interface AdminStats {
   totalRevenue: number;
   activeSubscriptions: number;
   todayOrders: number;
+  pendingSellers: number;
+}
+
+export type SellerStatus = "pending" | "approved" | "rejected";
+
+export interface Seller {
+  id: number;
+  businessName: string;
+  ownerName: string;
+  phone: string;
+  address: string;
+  landmark: string;
+  description?: string | null;
+  status: SellerStatus;
+  createdAt: string;
+}
+
+export interface SellerInput {
+  businessName: string;
+  ownerName: string;
+  phone: string;
+  address: string;
+  landmark: string;
+  description?: string;
+}
+
+export interface SellerStatusUpdate {
+  status: SellerStatus;
 }
 
 // ── Query keys ───────────────────────────────────────────────────────────────
@@ -122,6 +152,8 @@ export const getListOrdersQueryKey = () => ["/api/orders"] as const;
 export const getGetOrderQueryKey = (id: string) => [`/api/orders/${id}`] as const;
 export const getListSubscriptionsQueryKey = () => ["/api/subscriptions"] as const;
 export const getListTestimonialsQueryKey = () => ["/api/testimonials"] as const;
+export const getListSellersQueryKey = () => ["/api/sellers"] as const;
+export const getListAllSellersQueryKey = () => ["/api/sellers/all"] as const;
 
 // ── Query hooks ──────────────────────────────────────────────────────────────
 
@@ -174,6 +206,22 @@ export function useListTestimonials(options?: { query?: Partial<UseQueryOptions<
   });
 }
 
+export function useListSellers(options?: { query?: Partial<UseQueryOptions<Seller[]>> }) {
+  return useQuery<Seller[]>({
+    queryKey: getListSellersQueryKey(),
+    queryFn: () => apiFetch<Seller[]>("/api/sellers"),
+    ...options?.query,
+  });
+}
+
+export function useListAllSellers(options?: { query?: Partial<UseQueryOptions<Seller[]>> }) {
+  return useQuery<Seller[]>({
+    queryKey: getListAllSellersQueryKey(),
+    queryFn: () => apiFetch<Seller[]>("/api/sellers/all"),
+    ...options?.query,
+  });
+}
+
 // ── Mutation hooks ───────────────────────────────────────────────────────────
 
 export function useCreateOrder(options?: { mutation?: Partial<UseMutationOptions<Order, Error, { data: OrderInput }>> }) {
@@ -200,6 +248,20 @@ export function useUpdateOrderStatus(options?: { mutation?: Partial<UseMutationO
 export function useUpdatePrices(options?: { mutation?: Partial<UseMutationOptions<EggPrice, Error, { data: EggPriceInput }>> }) {
   return useMutation<EggPrice, Error, { data: EggPriceInput }>({
     mutationFn: ({ data }) => apiFetch<EggPrice>("/api/prices", { method: "PUT", body: JSON.stringify(data) }),
+    ...options?.mutation,
+  });
+}
+
+export function useRegisterSeller(options?: { mutation?: Partial<UseMutationOptions<Seller, Error, { data: SellerInput }>> }) {
+  return useMutation<Seller, Error, { data: SellerInput }>({
+    mutationFn: ({ data }) => apiFetch<Seller>("/api/sellers", { method: "POST", body: JSON.stringify(data) }),
+    ...options?.mutation,
+  });
+}
+
+export function useUpdateSellerStatus(options?: { mutation?: Partial<UseMutationOptions<Seller, Error, { id: number; data: SellerStatusUpdate }>> }) {
+  return useMutation<Seller, Error, { id: number; data: SellerStatusUpdate }>({
+    mutationFn: ({ id, data }) => apiFetch<Seller>(`/api/sellers/${id}/status`, { method: "PATCH", body: JSON.stringify(data) }),
     ...options?.mutation,
   });
 }

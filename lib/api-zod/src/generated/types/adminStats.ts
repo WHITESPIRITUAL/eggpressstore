@@ -13,4 +13,5 @@ export interface AdminStats {
   totalRevenue: number;
   activeSubscriptions: number;
   todayOrders: number;
+  pendingSellers: number;
 }

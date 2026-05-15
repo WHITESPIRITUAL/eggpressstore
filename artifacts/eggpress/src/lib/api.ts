@@ -265,3 +265,25 @@ export function useUpdateSellerStatus(options?: { mutation?: Partial<UseMutation
     ...options?.mutation,
   });
 }
+
+// ── Site Settings ─────────────────────────────────────────────────────────────
+
+export type SiteSettings = Record<string, string>;
+
+export const getGetSettingsQueryKey = () => ["/api/settings"] as const;
+
+export function useGetSettings(options?: { query?: Partial<UseQueryOptions<SiteSettings>> }) {
+  return useQuery<SiteSettings>({
+    queryKey: getGetSettingsQueryKey(),
+    queryFn: () => apiFetch<SiteSettings>("/api/settings"),
+    staleTime: 5 * 60 * 1000,
+    ...options?.query,
+  });
+}
+
+export function useUpdateSettings(options?: { mutation?: Partial<UseMutationOptions<SiteSettings, Error, { data: SiteSettings }>> }) {
+  return useMutation<SiteSettings, Error, { data: SiteSettings }>({
+    mutationFn: ({ data }) => apiFetch<SiteSettings>("/api/admin/settings", { method: "PATCH", body: JSON.stringify(data) }),
+    ...options?.mutation,
+  });
+}

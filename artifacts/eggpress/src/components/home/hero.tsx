@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import heroLady from "../../assets/hero-lady-nobg.png";
 import logoImg from "../../assets/eggpress-logo-nobg.png";
+import { useGetSettings } from "@/lib/api";
 
 interface HeroProps {
   onOrder: () => void;
@@ -73,6 +74,7 @@ export default function Hero({ onOrder, onTrack }: HeroProps) {
   const y = useTransform(scrollYProgress, [0, 1], [0, 120]);
   const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
   const imageY = useTransform(scrollYProgress, [0, 1], [0, 60]);
+  const { data: settings } = useGetSettings();
 
   const eggs = [
     { x: "5%", y: "10%", size: 64, delay: 0, duration: 5.5, rotate: -12 },
@@ -163,7 +165,7 @@ export default function Hero({ onOrder, onTrack }: HeroProps) {
           opacity,
         }}
       >
-        <div style={{ maxWidth: "36rem" }}>
+        <div style={{ maxWidth: "36rem" }} className="hero-content-box">
           {/* Logo + badge */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -324,9 +326,9 @@ export default function Hero({ onOrder, onTrack }: HeroProps) {
             style={{ display: "flex", gap: "1.5rem", marginTop: "2.5rem", flexWrap: "wrap" }}
           >
             {[
-              { label: "Orders Today", value: "200+" },
-              { label: "Happy Customers", value: "5,000+" },
-              { label: "Delivery Time", value: "< 2hrs" },
+              { label: "Orders Today", value: settings?.hero_stat_orders ?? "200+" },
+              { label: "Happy Customers", value: settings?.hero_stat_customers ?? "5,000+" },
+              { label: "Delivery Time", value: settings?.hero_stat_delivery ?? "< 2hrs" },
             ].map((stat) => (
               <div key={stat.label} style={{ textAlign: "center" }}>
                 <div style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: "1.25rem", color: "#F5B800" }}>{stat.value}</div>

@@ -1,7 +1,15 @@
 import { motion } from "framer-motion";
 import logoImg from "../../assets/eggpress-logo-nobg.png";
+import { useGetSettings } from "@/lib/api";
 
 export default function Footer() {
+  const { data: settings } = useGetSettings();
+  const phone = settings?.phone ?? "09013698449";
+  const whatsapp = settings?.whatsapp ?? "2349013698449";
+  const address = settings?.address ?? "Benin City, Edo State, Nigeria";
+  const hours = settings?.opening_hours ?? "7 AM \u2013 7 PM Daily";
+  const aboutText = settings?.about_text ?? "Premium farm-fresh egg delivery in Benin City, Nigeria. Quality you can taste, delivered to your door.";
+
   return (
     <footer className="relative pt-16 pb-8 px-6 overflow-hidden">
       {/* Background */}
@@ -31,7 +39,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-muted-foreground text-sm font-sans leading-relaxed max-w-xs">
-              Premium farm-fresh egg delivery in Benin City, Nigeria. Quality you can taste, delivered to your door.
+              {aboutText}
             </p>
             <div className="flex gap-3 mt-1">
               {[
@@ -74,24 +82,24 @@ export default function Footer() {
             <div className="space-y-3 text-sm font-sans text-muted-foreground">
               <div className="flex items-center gap-2">
                 <span>📍</span>
-                <span>Benin City, Edo State, Nigeria</span>
+                <span>{address}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span>📞</span>
-                <a href="tel:09013698449" className="hover:text-foreground transition-colors">09013698449</a>
+                <a href={`tel:${phone}`} className="hover:text-foreground transition-colors">{phone}</a>
               </div>
               <div className="flex items-center gap-2">
                 <span>🟢</span>
-                <a href="https://wa.me/2349013698449" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">WhatsApp Us</a>
+                <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">WhatsApp Us</a>
               </div>
               <div className="flex items-center gap-2">
                 <span>⏰</span>
-                <span>7 AM – 7 PM Daily</span>
+                <span>{hours}</span>
               </div>
             </div>
 
             <motion.a
-              href="https://wa.me/2349013698449"
+              href={`https://wa.me/${whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
               data-testid="link-footer-whatsapp"

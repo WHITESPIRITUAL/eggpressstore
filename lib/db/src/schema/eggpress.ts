@@ -77,6 +77,14 @@ export const sellersTable = pgTable("sellers", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const siteSettingsTable = pgTable("site_settings", {
+  key: text("key").primaryKey(),
+  value: text("value").notNull(),
+  label: text("label").notNull().default(""),
+  group: text("group").notNull().default("general"),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const insertOrderSchema = createInsertSchema(ordersTable).omit({ id: true, status: true, referenceCode: true, createdAt: true });
 export const insertSubscriptionSchema = createInsertSchema(subscriptionsTable).omit({ id: true, active: true, createdAt: true });
 export const insertSellerSchema = createInsertSchema(sellersTable).omit({ id: true, status: true, createdAt: true });

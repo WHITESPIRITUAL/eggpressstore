@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useCreateOrder, useGetPrices } from "@/lib/api";
+import { useCreateOrder, useGetPrices, useGetSettings, useListSellers, type Seller } from "@/lib/api";
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -79,14 +79,25 @@ export default function OrderModal({ isOpen, onClose, initialSize }: OrderModalP
   const [savedData, setSavedData] = useState<Record<string, string> | null>(null);
   const [orderId, setOrderId] = useState("");
   const [refCode, setRefCode] = useState("");
+  const [selectedSeller, setSelectedSeller] = useState<Seller | null>(null);
 
   const { data: pricesData } = useGetPrices();
   const prices = Array.isArray(pricesData) ? pricesData : [];
   const createOrder = useCreateOrder();
+  const { data: settings } = useGetSettings();
+  const { data: sellers = [] } = useListSellers();
+
+  const nearbySellers = landmark
+    ? sellers.filter(s =>
+        s.landmark.toLowerCase().includes(landmark.toLowerCase()) ||
+        landmark.toLowerCase().includes(s.landmark.toLowerCase())
+      ).slice(0, 5)
+    : [];
 
   useEffect(() => {
     if (isOpen) {
       setStep(1);
+      setSelectedSeller(null);
       if (initialSize) setSize(initialSize);
       const saved = loadSaved();
       if (saved) {
@@ -116,7 +127,7 @@ export default function OrderModal({ isOpen, onClose, initialSize }: OrderModalP
         phone,
         address,
         landmark: deliveryType === "delivery" && landmark ? landmark : undefined,
-        deliveryNotes: notes || undefined,
+        deliveryNotes: [notes, selectedSeller ? `Preferred seller: ${selectedSeller.businessName} (${selectedSeller.phone})` : ""].filter(Boolean).join(" | ") || undefined,
         eggSize: size,
         quantityType: qty,
         customQuantity: qty === "custom" ? parseInt(customQty) : undefined,
@@ -285,6 +296,37 @@ export default function OrderModal({ isOpen, onClose, initialSize }: OrderModalP
                       </select>
                     </div>
                   )}
+                  {deliveryType === "delivery" && landmark && nearbySellers.length > 0 && (
+                    <div className="mt-1">
+                      <label className="text-xs uppercase tracking-wide block mb-2" style={{ color: "var(--muted-foreground)" }}>
+                        Sellers Near You <span className="normal-case tracking-normal opacity-70">(optional)</span>
+                      </label>
+                      <div className="space-y-2">
+                        {nearbySellers.map(seller => (
+                          <button key={seller.id} type="button"
+                            onClick={() => setSelectedSeller(prev => prev?.id === seller.id ? null : seller)}
+                            className="w-full text-left p-3 rounded-xl border transition-all duration-200"
+                            style={{
+                              borderColor: selectedSeller?.id === seller.id ? "#F5B800" : "rgba(255,255,255,0.1)",
+                              background: selectedSeller?.id === seller.id ? "rgba(245,184,0,0.1)" : "rgba(255,255,255,0.02)",
+                            }}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <p className="font-heading font-semibold text-sm text-foreground">{seller.businessName}</p>
+                                <p className="text-xs mt-0.5" style={{ color: "var(--muted-foreground)" }}>📍 {seller.landmark} · {seller.phone}</p>
+                              </div>
+                              {selectedSeller?.id === seller.id && (
+                                <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ml-2" style={{ background: "#F5B800" }}>
+                                  <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3"><path d="M13 4L6 11 3 8" stroke="#1A0A00" strokeWidth="2.5" strokeLinecap="round" /></svg>
+                                </div>
+                              )}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Delivery notes (optional)" rows={2} data-testid="input-notes" className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none resize-none" />
                 </div>
                 <div className="flex gap-3 mt-6">
@@ -310,10 +352,13 @@ export default function OrderModal({ isOpen, onClose, initialSize }: OrderModalP
                 <div className="p-4 rounded-2xl border border-primary/30 bg-primary/5 mb-4">
                   <p className="text-primary font-heading font-bold text-sm mb-3">Transfer to:</p>
                   <div className="space-y-2 text-sm">
-                    <div className="flex justify-between"><span className="text-muted-foreground">Bank Name</span><span className="text-foreground font-medium">Opay</span></div>
-                    <div className="flex justify-between"><span className="text-muted-foreground">Account Number</span><span className="text-foreground font-mono font-bold">9013698449</span></div>
-                    <div className="flex justify-between"><span className="text-muted-foreground">Account Name</span><span className="text-foreground font-medium">EGGPRESS</span></div>
-                    <div className="flex justify-between"><span className="text-muted-foreground">Amount</span><span className="text-primary font-black">₦{Number(unitPrice).toLocaleString()}</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Bank Name</span><span className="text-foreground font-medium">{settings?.payment_bank ?? "Opay"}</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Account Number</span><span className="text-foreground font-mono font-bold text-lg tracking-widest" style={{ color: "#F5B800" }}>{settings?.payment_account_number ?? "9013698449"}</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Account Name</span><span className="text-foreground font-medium">{settings?.payment_account_name ?? "EGGPRESS"}</span></div>
+                    <div className="flex justify-between border-t border-white/10 pt-2 mt-2"><span className="text-foreground font-bold">Amount</span><span className="text-primary font-black">₦{Number(unitPrice).toLocaleString()}</span></div>
+                    {selectedSeller && (
+                      <div className="flex justify-between"><span className="text-muted-foreground">Preferred Seller</span><span className="text-foreground font-medium">{selectedSeller.businessName}</span></div>
+                    )}
                   </div>
                 </div>
 

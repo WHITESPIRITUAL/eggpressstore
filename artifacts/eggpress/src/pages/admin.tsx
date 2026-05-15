@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   useGetAdminStats, getGetAdminStatsQueryKey,
@@ -9,13 +9,16 @@ import {
   useListSubscriptions, getListSubscriptionsQueryKey,
   useListAllSellers, getListAllSellersQueryKey,
   useUpdateSellerStatus,
+  useGetSettings, getGetSettingsQueryKey,
+  useUpdateSettings,
+  type SiteSettings,
 } from "@/lib/api";
 import { useQueryClient } from "@tanstack/react-query";
 import logoImg from "../assets/eggpress-logo-nobg.png";
 
 const ADMIN_PIN = "1234";
 
-type Tab = "dashboard" | "orders" | "prices" | "subscriptions" | "sellers";
+type Tab = "dashboard" | "orders" | "prices" | "subscriptions" | "sellers" | "settings";
 
 const statusOptions = ["received", "payment_confirmed", "preparing", "ready", "out_for_delivery", "delivered"] as const;
 
@@ -34,6 +37,34 @@ const tabConfig: { key: Tab; label: string; icon: string }[] = [
   { key: "prices", label: "Prices", icon: "💰" },
   { key: "subscriptions", label: "Subscriptions", icon: "🔄" },
   { key: "sellers", label: "Sellers", icon: "🧑‍🌾" },
+  { key: "settings", label: "Settings", icon: "⚙️" },
+];
+
+interface SettingsField { key: string; label: string; inputType: "text" | "tel" | "textarea"; placeholder: string; }
+interface SettingsGroup { key: string; label: string; icon: string; fields: SettingsField[]; }
+
+const settingsGroups: SettingsGroup[] = [
+  { key: "business", label: "Business Details", icon: "🏢", fields: [
+    { key: "business_name", label: "Business Name", inputType: "text", placeholder: "Eggpress" },
+    { key: "tagline", label: "Tagline", inputType: "text", placeholder: "Fresh Eggs, Delivered Fast." },
+    { key: "about_text", label: "About Text", inputType: "textarea", placeholder: "About your business..." },
+  ]},
+  { key: "contact", label: "Contact Information", icon: "📞", fields: [
+    { key: "phone", label: "Phone Number", inputType: "tel", placeholder: "09013698449" },
+    { key: "whatsapp", label: "WhatsApp (with country code)", inputType: "tel", placeholder: "2349013698449" },
+    { key: "address", label: "Business Address", inputType: "text", placeholder: "Benin City, Edo State, Nigeria" },
+    { key: "opening_hours", label: "Opening Hours", inputType: "text", placeholder: "7 AM – 7 PM Daily" },
+  ]},
+  { key: "payment", label: "Payment Details", icon: "💳", fields: [
+    { key: "payment_bank", label: "Bank Name", inputType: "text", placeholder: "Opay" },
+    { key: "payment_account_number", label: "Account Number", inputType: "text", placeholder: "9013698449" },
+    { key: "payment_account_name", label: "Account Name", inputType: "text", placeholder: "EGGPRESS" },
+  ]},
+  { key: "hero", label: "Hero Section Stats", icon: "✨", fields: [
+    { key: "hero_stat_orders", label: "Orders Today Label", inputType: "text", placeholder: "200+" },
+    { key: "hero_stat_customers", label: "Happy Customers Label", inputType: "text", placeholder: "5,000+" },
+    { key: "hero_stat_delivery", label: "Delivery Time Label", inputType: "text", placeholder: "< 2hrs" },
+  ]},
 ];
 
 export default function Admin() {
@@ -42,6 +73,9 @@ export default function Admin() {
   const [pinError, setPinError] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>("dashboard");
   const [priceForm, setPriceForm] = useState({ size: "large", fullCrate: "", halfCrate: "", quarterCrate: "" });
+  const [settingsForm, setSettingsForm] = useState<SiteSettings>({});
+  const [savingGroup, setSavingGroup] = useState<string | null>(null);
+  const [savedGroup, setSavedGroup] = useState<string | null>(null);
   const qc = useQueryClient();
 
   function attemptLogin() {
@@ -54,6 +88,12 @@ export default function Admin() {
   const { data: prices } = useGetPrices({ query: { enabled: authenticated && activeTab === "prices", queryKey: getGetPricesQueryKey() } });
   const { data: subscriptions } = useListSubscriptions({ query: { enabled: authenticated && activeTab === "subscriptions", queryKey: getListSubscriptionsQueryKey() } });
   const { data: sellers } = useListAllSellers({ query: { enabled: authenticated && activeTab === "sellers", queryKey: getListAllSellersQueryKey() } });
+  const { data: settingsRaw } = useGetSettings({ query: { enabled: authenticated } });
+  const updateSettings = useUpdateSettings();
+
+  useEffect(() => {
+    if (settingsRaw) setSettingsForm(settingsRaw);
+  }, [settingsRaw]);
 
   const updateStatus = useUpdateOrderStatus();
   const updatePrice = useUpdatePrices();
@@ -68,6 +108,24 @@ export default function Admin() {
   function handleSellerStatus(sellerId: number, status: "pending" | "approved" | "rejected") {
     updateSellerStatus.mutate({ id: sellerId, data: { status } }, {
       onSuccess: () => qc.invalidateQueries({ queryKey: getListAllSellersQueryKey() }),
+    });
+  }
+
+  function handleSaveGroup(groupKey: string) {
+    const group = settingsGroups.find(g => g.key === groupKey);
+    if (!group) return;
+    setSavingGroup(groupKey);
+    const payload: SiteSettings = {};
+    group.fields.forEach(f => { if (settingsForm[f.key] !== undefined) payload[f.key] = settingsForm[f.key]; });
+    updateSettings.mutate({ data: payload }, {
+      onSuccess: (data) => {
+        setSettingsForm(data);
+        setSavingGroup(null);
+        setSavedGroup(groupKey);
+        setTimeout(() => setSavedGroup(null), 2500);
+        qc.invalidateQueries({ queryKey: getGetSettingsQueryKey() });
+      },
+      onError: () => setSavingGroup(null),
     });
   }
 
@@ -281,11 +339,14 @@ export default function Admin() {
                     style={{ background: "rgba(245,184,0,0.05)", border: "1px solid rgba(245,184,0,0.12)" }}>
                     <p className="text-sm font-heading font-semibold mb-2" style={{ color: "#F5B800" }}>📌 Quick Info</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-muted-foreground font-sans">
-                      <span>Payment: Opay 9013698449</span>
-                      <span>Location: Benin City, Nigeria</span>
-                      <span>Delivery: 7 AM – 7 PM</span>
-                      <span>WhatsApp: 09013698449</span>
+                      <span>Payment: {settingsForm.payment_bank ?? "Opay"} {settingsForm.payment_account_number ?? "9013698449"}</span>
+                      <span>Location: {settingsForm.address ?? "Benin City, Nigeria"}</span>
+                      <span>Hours: {settingsForm.opening_hours ?? "7 AM – 7 PM"}</span>
+                      <span>WhatsApp: {settingsForm.phone ?? "09013698449"}</span>
                     </div>
+                    <button onClick={() => setActiveTab("settings")} className="mt-3 text-xs hover:opacity-80 transition-opacity" style={{ color: "#F5B800" }}>
+                      ⚙️ Edit in Settings →
+                    </button>
                   </motion.div>
                 </motion.div>
               )}
@@ -567,6 +628,75 @@ export default function Admin() {
                         </motion.div>
                       );
                     })}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Settings */}
+              {activeTab === "settings" && (
+                <motion.div key="settings" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                  <div className="flex items-center gap-3 mb-6">
+                    <span className="text-3xl">⚙️</span>
+                    <h1 className="font-heading font-black text-3xl text-foreground">Site Settings</h1>
+                  </div>
+                  <p className="text-sm mb-8" style={{ color: "var(--muted-foreground)" }}>
+                    Everything you change here is reflected live on your website — phone numbers, payment details, contact info, hero stats, and more.
+                  </p>
+                  <div className="space-y-6">
+                    {settingsGroups.map(group => (
+                      <div key={group.key} className="rounded-2xl overflow-hidden" style={{ background: "rgba(12,6,0,0.75)", border: "1px solid rgba(245,184,0,0.12)", backdropFilter: "blur(16px)" }}>
+                        <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: "1px solid rgba(245,184,0,0.1)", background: "rgba(245,184,0,0.04)" }}>
+                          <div className="flex items-center gap-3">
+                            <span className="text-xl">{group.icon}</span>
+                            <h2 className="font-heading font-bold text-base text-foreground">{group.label}</h2>
+                          </div>
+                          <motion.button
+                            onClick={() => handleSaveGroup(group.key)}
+                            disabled={savingGroup === group.key}
+                            whileHover={{ scale: 1.03 }}
+                            whileTap={{ scale: 0.97 }}
+                            className="px-4 py-2 rounded-xl text-sm font-heading font-bold transition-all disabled:opacity-60"
+                            style={{
+                              background: savedGroup === group.key ? "rgba(34,197,94,0.15)" : "rgba(245,184,0,0.15)",
+                              border: `1px solid ${savedGroup === group.key ? "rgba(34,197,94,0.4)" : "rgba(245,184,0,0.35)"}`,
+                              color: savedGroup === group.key ? "#22C55E" : "#F5B800",
+                            }}
+                          >
+                            {savingGroup === group.key ? "Saving..." : savedGroup === group.key ? "✓ Saved!" : "Save"}
+                          </motion.button>
+                        </div>
+                        <div className="p-6 space-y-4">
+                          {group.fields.map(field => (
+                            <div key={field.key}>
+                              <label className="text-xs uppercase tracking-wide block mb-1.5" style={{ color: "var(--muted-foreground)" }}>{field.label}</label>
+                              {field.inputType === "textarea" ? (
+                                <textarea
+                                  value={settingsForm[field.key] ?? ""}
+                                  onChange={e => setSettingsForm(f => ({ ...f, [field.key]: e.target.value }))}
+                                  placeholder={field.placeholder}
+                                  rows={3}
+                                  className="w-full px-4 py-3 rounded-xl border text-foreground placeholder:text-muted-foreground focus:outline-none resize-none transition-all"
+                                  style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(245,184,0,0.15)" }}
+                                  onFocus={e => (e.currentTarget.style.borderColor = "rgba(245,184,0,0.5)")}
+                                  onBlur={e => (e.currentTarget.style.borderColor = "rgba(245,184,0,0.15)")}
+                                />
+                              ) : (
+                                <input
+                                  type={field.inputType}
+                                  value={settingsForm[field.key] ?? ""}
+                                  onChange={e => setSettingsForm(f => ({ ...f, [field.key]: e.target.value }))}
+                                  placeholder={field.placeholder}
+                                  className="w-full px-4 py-3 rounded-xl border text-foreground placeholder:text-muted-foreground focus:outline-none transition-all"
+                                  style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(245,184,0,0.15)" }}
+                                  onFocus={e => (e.currentTarget.style.borderColor = "rgba(245,184,0,0.5)")}
+                                  onBlur={e => (e.currentTarget.style.borderColor = "rgba(245,184,0,0.15)")}
+                                />
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </motion.div>
               )}

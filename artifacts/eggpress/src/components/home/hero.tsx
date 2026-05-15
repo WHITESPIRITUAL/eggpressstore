@@ -9,50 +9,6 @@ interface HeroProps {
   onTrack: () => void;
 }
 
-function EggCrate({ x, y, size = 100, delay = 0, rotate = 0 }: { x: string; y: string; size?: number; delay?: number; rotate?: number }) {
-  return (
-    <motion.div
-      style={{ position: "absolute", left: x, top: y, pointerEvents: "none" }}
-      animate={{ y: [0, -14, 0], rotate: [rotate, rotate + 4, rotate] }}
-      transition={{ duration: 6, delay, repeat: Infinity, ease: "easeInOut" }}
-    >
-      <svg width={size} height={Math.round(size * 0.75)} viewBox="0 0 140 105" fill="none">
-        <rect x="4" y="36" width="132" height="65" rx="6" fill="#6B3410" stroke="#3D1800" strokeWidth="2.5"/>
-        <line x1="4" y1="58" x2="136" y2="58" stroke="#3D1800" strokeWidth="2"/>
-        <line x1="4" y1="78" x2="136" y2="78" stroke="#3D1800" strokeWidth="2"/>
-        <line x1="48" y1="36" x2="48" y2="101" stroke="#3D1800" strokeWidth="2"/>
-        <line x1="92" y1="36" x2="92" y2="101" stroke="#3D1800" strokeWidth="2"/>
-        <rect x="4" y="36" width="132" height="8" rx="3" fill="#8B4513" opacity="0.6"/>
-        <ellipse cx="26" cy="49" rx="14" ry="10" fill="#FFF8E7" stroke="#D4B87A" strokeWidth="1.5"/>
-        <ellipse cx="70" cy="49" rx="14" ry="10" fill="#FFFCF0" stroke="#D4B87A" strokeWidth="1.5"/>
-        <ellipse cx="114" cy="49" rx="14" ry="10" fill="#FFF8E7" stroke="#D4B87A" strokeWidth="1.5"/>
-        <ellipse cx="26" cy="68" rx="14" ry="10" fill="#FFFCF0" stroke="#D4B87A" strokeWidth="1.5"/>
-        <ellipse cx="70" cy="68" rx="14" ry="10" fill="#FFF8E7" stroke="#D4B87A" strokeWidth="1.5"/>
-        <ellipse cx="114" cy="68" rx="14" ry="10" fill="#FFFCF0" stroke="#D4B87A" strokeWidth="1.5"/>
-        <ellipse cx="26" cy="88" rx="14" ry="10" fill="#FFF8E7" stroke="#D4B87A" strokeWidth="1.5"/>
-        <ellipse cx="70" cy="88" rx="14" ry="10" fill="#FFFCF0" stroke="#D4B87A" strokeWidth="1.5"/>
-        <ellipse cx="114" cy="88" rx="14" ry="10" fill="#FFF8E7" stroke="#D4B87A" strokeWidth="1.5"/>
-        <path d="M32 36 Q70 10 108 36" stroke="#8B4513" strokeWidth="4" fill="none" strokeLinecap="round"/>
-      </svg>
-    </motion.div>
-  );
-}
-
-function FloatingEgg({ x, y, size, delay, duration, rotate }: { x: string; y: string; size: number; delay: number; duration: number; rotate: number }) {
-  return (
-    <motion.div
-      style={{ position: "absolute", left: x, top: y, pointerEvents: "none" }}
-      animate={{ y: [0, -24, 0], rotate: [rotate, rotate + 10, rotate] }}
-      transition={{ duration, delay, repeat: Infinity, ease: "easeInOut" }}
-    >
-      <svg width={size} height={Math.round(size * 1.25)} viewBox="0 0 80 100" fill="none">
-        <ellipse cx="40" cy="58" rx="32" ry="38" fill="#F5DFA0" stroke="#C8923A" strokeWidth="2"/>
-        <ellipse cx="40" cy="30" rx="22" ry="28" fill="#FFF8E7" stroke="#D4A855" strokeWidth="1.5"/>
-        <ellipse cx="30" cy="22" rx="7" ry="9" fill="white" opacity="0.4" />
-      </svg>
-    </motion.div>
-  );
-}
 
 function Sparkle({ x, y, delay }: { x: string; y: string; delay: number }) {
   return (
@@ -75,16 +31,6 @@ export default function Hero({ onOrder, onTrack }: HeroProps) {
   const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
   const imageY = useTransform(scrollYProgress, [0, 1], [0, 60]);
   const { data: settings } = useGetSettings();
-
-  const eggs = [
-    { x: "5%", y: "10%", size: 64, delay: 0, duration: 5.5, rotate: -12 },
-    { x: "88%", y: "7%", size: 80, delay: 0.8, duration: 6.2, rotate: 15 },
-    { x: "2%", y: "60%", size: 48, delay: 0.4, duration: 7, rotate: 20 },
-    { x: "28%", y: "4%", size: 40, delay: 2, duration: 6.5, rotate: 8 },
-    { x: "91%", y: "65%", size: 42, delay: 0.6, duration: 5.8, rotate: -5 },
-    { x: "20%", y: "80%", size: 36, delay: 1.4, duration: 7.5, rotate: 30 },
-    { x: "75%", y: "18%", size: 30, delay: 3, duration: 5, rotate: -20 },
-  ];
 
   const sparkles = [
     { x: "15%", y: "35%", delay: 0 },
@@ -122,15 +68,6 @@ export default function Hero({ onOrder, onTrack }: HeroProps) {
         {sparkles.map((s, i) => <Sparkle key={i} {...s} />)}
       </motion.div>
 
-      {/* Floating eggs */}
-      <motion.div style={{ position: "absolute", inset: 0, y }}>
-        {eggs.map((egg, i) => <FloatingEgg key={i} {...egg} />)}
-      </motion.div>
-
-      {/* Egg crates */}
-      <EggCrate x="1%" y="72%" size={90} delay={0.5} rotate={-8} />
-      <EggCrate x="84%" y="55%" size={75} delay={1.5} rotate={12} />
-      <EggCrate x="55%" y="5%" size={60} delay={2.5} rotate={-5} />
 
       {/* Hero lady — responsive, visible on all screen sizes */}
       <motion.div

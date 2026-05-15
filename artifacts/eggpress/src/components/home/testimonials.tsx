@@ -1,15 +1,7 @@
-import { motion, useInView, AnimatePresence } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 import { useListTestimonials } from "@/lib/api";
 
-const liveNotifications = [
-  "Chioma from GRA just ordered 2 crates of Large Eggs",
-  "Mr. Osagie from Ugbowo ordered a Full Crate of Medium Eggs",
-  "Blessing from Ekenwan set up a Weekly subscription",
-  "Chef Emeka ordered 3 Full Crates for his restaurant",
-  "Aunty Nkechi from Airport Road placed a new order",
-  "James from Uselu ordered Half Crate of Large Eggs",
-];
 
 const avatarColors = [
   "linear-gradient(135deg, #F5B800, #E8820C)",
@@ -51,19 +43,6 @@ export default function Testimonials() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const { data: testimonials, isLoading } = useListTestimonials();
-  const [notifIndex, setNotifIndex] = useState(0);
-  const [showNotif, setShowNotif] = useState(false);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNotifIndex(i => (i + 1) % liveNotifications.length);
-      setShowNotif(true);
-      setTimeout(() => setShowNotif(false), 4500);
-    }, 6000);
-    setTimeout(() => setShowNotif(true), 2500);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <section ref={ref} className="py-24 px-6 relative overflow-hidden">
       {/* Background */}
@@ -152,24 +131,6 @@ export default function Testimonials() {
         </motion.div>
       </div>
 
-      {/* Live notification */}
-      <AnimatePresence>
-        {showNotif && (
-          <motion.div
-            initial={{ opacity: 0, x: 100, y: 20 }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            exit={{ opacity: 0, x: 100, y: 10 }}
-            transition={{ type: "spring", stiffness: 200, damping: 20 }}
-            className="fixed bottom-6 right-6 z-40 max-w-xs rounded-2xl p-4 flex items-center gap-3"
-            style={{ background: "rgba(10,5,0,0.92)", border: "1px solid rgba(245,184,0,0.25)", backdropFilter: "blur(20px)", boxShadow: "0 12px 40px rgba(245,184,0,0.2)" }}
-          >
-            <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-base" style={{ background: "rgba(245,184,0,0.15)", border: "1px solid rgba(245,184,0,0.25)" }}>
-              🥚
-            </div>
-            <p className="text-xs text-foreground leading-tight">{liveNotifications[notifIndex]}</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 }
